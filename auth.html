@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0e11">
+<title>Sign In or Create Account — Firm Garage</title>
+<meta name="description" content="Sign in or create your Firm Garage account to save favorite firms, write reviews, and compare rules.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo.png">
+<link rel="apple-touch-icon" href="/assets/images/logo.png">
+<link rel="preconnect" href="https://esm.sh">
+<link rel="preconnect" href="https://mvltzznwdglwaedfzxze.supabase.co">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root[data-theme="dark"]{
+  --bg:#0b0e11;--surface:#131820;--surface-2:#161c26;--surface-3:#1a2029;
+  --line:#242b35;--line-2:#2f3846;
+  --text:#e6ebf0;--text-dim:#a3aebd;--text-mute:#6b7787;
+  --accent:#4a9eff;--accent-dim:#2f5f8f;--accent-bg:rgba(74,158,255,.08);
+  --success:#4ade80;--danger:#ff6b6b;
+  --shadow:0 8px 24px rgba(0,0,0,.4);
+}
+:root[data-theme="light"]{
+  --bg:#f7f8fa;--surface:#ffffff;--surface-2:#f2f4f7;--surface-3:#e9ecf0;
+  --line:#e1e5eb;--line-2:#d1d7de;
+  --text:#1a1f26;--text-dim:#525c69;--text-mute:#8a94a0;
+  --accent:#1e75e8;--accent-dim:#1857b3;--accent-bg:rgba(30,117,232,.08);
+  --success:#16a34a;--danger:#dc2626;
+  --shadow:0 4px 12px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:14.5px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  transition:background .2s,color .2s;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+
+/* TOP BAR */
+.topbar{height:56px;border-bottom:1px solid var(--line);background:var(--surface);display:flex;align-items:center;padding:0 20px;gap:16px;}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.3px;color:var(--text);}
+.logo-mark{width:26px;height:26px;border-radius:6px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
+.logo span{color:var(--accent)}
+.topbar-spacer{flex:1}
+.topbar-btn{width:34px;height:34px;border:1px solid var(--line-2);border-radius:7px;background:transparent;color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s;}
+.topbar-btn:hover{border-color:var(--accent-dim);color:var(--text)}
+
+/* MAIN */
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.wrap{width:100%;max-width:420px}
+.brand{text-align:center;margin-bottom:24px;}
+.brand-name{font-size:26px;font-weight:700;letter-spacing:-.6px;}
+.brand-name span{color:var(--accent)}
+.brand-tag{font-size:13px;color:var(--text-mute);margin-top:6px;}
+
+.card{
+  padding:28px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+}
+h1{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px;}
+.sub{color:var(--text-dim);font-size:13.5px;margin-bottom:22px;line-height:1.6;}
+
+/* Tabs */
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px;
+  padding:4px;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:8px;
+  margin-bottom:22px;
+}
+.tabs button{
+  border:0;
+  border-radius:6px;
+  padding:9px;
+  background:transparent;
+  color:var(--text-dim);
+  font-weight:500;
+  font-size:13.5px;
+  transition:.15s;
+}
+.tabs button:hover{color:var(--text)}
+.tabs button.active{background:var(--surface);color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+
+/* Fields */
+.field{display:grid;gap:6px;margin-bottom:14px;}
+.field label{font-size:12.5px;font-weight:600;color:var(--text-dim);}
+[hidden]{display:none !important;}
+.field input,
+.field .country-input{
+  padding:10px 12px;
+  border:1px solid var(--line-2);
+  border-radius:7px;
+  background:var(--bg);
+  color:var(--text);
+  font-size:14px;
+  outline:none;
+  transition:.15s;
+  width:100%;
+}
+.field input:focus,
+.field .country-input:focus{border-color:var(--accent);background:var(--surface-2)}
+
+/* Country picker */
+.country-picker{position:relative}
+.country-picker .country-input{
+  padding-right:36px;
+  cursor:pointer;
+}
+.country-picker::after{
+  content:"▾";
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--text-mute);
+  font-size:11px;
+  pointer-events:none;
+  transition:transform .2s;
+}
+.country-picker.open::after{transform:translateY(-50%) rotate(180deg)}
+.country-picker.open .country-input{cursor:text}
+.country-results{
+  display:none;
+  position:absolute;
+  top:calc(100% + 4px);
+  left:0;right:0;
+  max-height:240px;
+  overflow-y:auto;
+  background:var(--surface);
+  border:1px solid var(--line-2);
+  border-radius:8px;
+  box-shadow:var(--shadow);
+  z-index:50;
+}
+.country-picker.open .country-results{display:block}
+.country-result{
+  padding:9px 12px;
+  font-size:13.5px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+  transition:.1s;
+}
+.country-result:last-child{border-bottom:0}
+.country-result:hover{background:var(--surface-2)}
+.country-result.selected{background:var(--accent-bg);color:var(--accent);font-weight:600}
+.country-empty{padding:12px;text-align:center;color:var(--text-mute);font-size:13px}
+
+/* Primary button */
+.primary{
+  width:100%;
+  padding:11px;
+  margin-top:6px;
+  border:0;
+  border-radius:7px;
+  background:var(--accent);
+  color:#fff;
+  font-weight:600;
+  font-size:14px;
+  transition:.15s;
+}
+.primary:hover{background:var(--accent-dim)}
+.primary:disabled{opacity:.6;cursor:wait}
+
+/* Secondary */
+.secondary{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:1px solid var(--line-2);
+  border-radius:7px;
+  background:transparent;
+  color:var(--text);
+  font-weight:500;
+  font-size:13.5px;
+  transition:.15s;
+}
+.secondary:hover{border-color:var(--accent-dim);color:var(--accent);background:var(--accent-bg)}
+
+/* Message */
+.message{
+  display:none;
+  margin-top:16px;
+  padding:11px 14px;
+  border-radius:8px;
+  font-size:13px;
+  line-height:1.5;
+}
+.message.show{display:block}
+.message.success{background:rgba(74,222,128,.1);color:var(--success);border:1px solid rgba(74,222,128,.25)}
+.message.error{background:rgba(255,107,107,.1);color:var(--danger);border:1px solid rgba(255,107,107,.25)}
+
+/* Small print */
+.small{
+  color:var(--text-mute);
+  font-size:12px;
+  line-height:1.6;
+  margin-top:18px;
+  text-align:center;
+}
+
+/* Links */
+.links{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:20px;
+  font-size:13px;
+  color:var(--text-mute);
+}
+.links a{color:var(--text-mute);transition:.15s}
+.links a:hover{color:var(--accent)}
+
+/* Logged-in panel */
+#accountPanel h1{margin-bottom:8px}
+#accountPanel .sub{margin-bottom:20px}
+.account-detail{
+  padding:12px 14px;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:13.5px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.account-detail .label{color:var(--text-mute);font-size:12px}
+.account-detail .value{color:var(--text);font-weight:500}
+
+@media (max-width:480px){
+  .card{padding:22px}
+  h1{font-size:20px}
+  .brand-name{font-size:22px}
+  main{padding:24px 16px}
+}
+</style>
+<link rel="stylesheet" href="/src/styles/variables.css">
+<link rel="stylesheet" href="/src/styles/base.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="logo-mark">F</span>Firm<span>Garage</span></a>
+  <div class="topbar-spacer"></div>
+  <button class="topbar-btn" id="themeToggle" title="Toggle theme">◐</button>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-name">Firm <span> Garage</span></div>
+      <div class="brand-tag">Compare prop firms, save favorites, write reviews</div>
+    </div>
+
+    <div class="card">
+      <!-- AUTH -->
+      <div id="authPanel">
+        <h1 id="heading">Welcome back</h1>
+        <p class="sub" id="subtitle">Log in to access your Firm Garage account.</p>
+
+        <div class="tabs">
+          <button type="button" id="loginTab" class="active">Log in</button>
+          <button type="button" id="signupTab">Create account</button>
+        </div>
+
+        <form id="authForm" autocomplete="on">
+          <div id="nameField" class="field" hidden>
+            <label for="fullName">Your name</label>
+            <input id="fullName" type="text" maxlength="80" autocomplete="name" placeholder="Your name">
+          </div>
+
+          <div id="countryField" class="field" hidden>
+            <label for="countrySearch">Country</label>
+            <div class="country-picker" id="countryPicker">
+              <input id="countrySearch" class="country-input" type="text" placeholder="Search countries…" autocomplete="off" readonly>
+              <input id="country" type="hidden">
+              <div class="country-results" id="countryResults"></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" required autocomplete="current-password" placeholder="Password" maxlength="128">
+          </div>
+
+          <div id="pwHelp" hidden style="font-size:12px;margin:-6px 0 12px;color:var(--text-mute)"><div style="height:6px;border-radius:9px;background:var(--line);overflow:hidden"><i id="pwBar" style="display:block;height:100%;width:0;background:#f87171;transition:.2s"></i></div><span id="pwTxt">Use 12+ characters. Mix upper/lower case, numbers and a symbol, or use a long passphrase.</span></div>
+          <label id="consentRow" hidden style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;margin:0 0 14px;color:var(--text-dim)"><input id="consent" type="checkbox" style="margin-top:3px"> <span>I am 18+ and agree to the <a href="terms.html" target="_blank" rel="noopener" style="color:var(--accent)">Terms</a>, <a href="privacy.html" target="_blank" rel="noopener" style="color:var(--accent)">Privacy Policy</a> and <a href="risk-disclosure.html" target="_blank" rel="noopener" style="color:var(--accent)">Risk Disclosure</a>.</span></label>
+          <button class="primary" id="submitButton" type="submit">Log in</button>
+        </form>
+
+        <button class="secondary" id="forgotButton" type="button">Forgot password?</button>
+
+        <div id="message" class="message" role="status" aria-live="polite"></div>
+
+        <p class="small">Protected by email verification, rate limiting and optional two-factor authentication. Never share your password.</p>
+      </div>
+
+      <!-- LOGGED IN -->
+      <div id="accountPanel" hidden>
+        <h1>Your account</h1>
+        <p class="sub">You are signed in to Firm Garage.</p>
+
+        <div class="account-detail">
+          <span class="label">Email</span>
+          <span class="value" id="accountEmail">—</span>
+        </div>
+        <div class="account-detail">
+          <span class="label">Country</span>
+          <span class="value" id="accountCountry">—</span>
+        </div>
+
+        <button class="primary" id="continueButton" type="button" style="margin-top:16px">Open dashboard</button>
+        <button class="secondary" id="logoutButton" type="button">Sign out</button>
+
+        <div id="accountMessage" class="message" role="status"></div>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="index.html">← Home</a>
+      <a href="firms.html">Browse firms →</a>
+    </div>
+  </div>
+</main>
+
+
+<script type="module">
+import { db } from "/src/services/supabase.js";
+
+const $ = (id) => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+
+/* THEME */
+const THEME_KEY = "Firm Garage-theme";
+function getStoredTheme(){ return localStorage.getItem(THEME_KEY) || "dark"; }
+function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(THEME_KEY, t); }
+function toggleTheme(){ applyTheme(getStoredTheme() === "dark" ? "light" : "dark"); }
+applyTheme(getStoredTheme());
+$("themeToggle").addEventListener("click", toggleTheme);
+
+/* COUNTRY LIST */
+const COUNTRIES = [
+  {code:"AF",name:"Afghanistan"},{code:"AL",name:"Albania"},{code:"DZ",name:"Algeria"},{code:"AD",name:"Andorra"},{code:"AO",name:"Angola"},{code:"AR",name:"Argentina"},{code:"AM",name:"Armenia"},{code:"AU",name:"Australia"},{code:"AT",name:"Austria"},{code:"AZ",name:"Azerbaijan"},{code:"BH",name:"Bahrain"},{code:"BD",name:"Bangladesh"},{code:"BY",name:"Belarus"},{code:"BE",name:"Belgium"},{code:"BZ",name:"Belize"},{code:"BJ",name:"Benin"},{code:"BT",name:"Bhutan"},{code:"BO",name:"Bolivia"},{code:"BA",name:"Bosnia and Herzegovina"},{code:"BW",name:"Botswana"},{code:"BR",name:"Brazil"},{code:"BN",name:"Brunei"},{code:"BG",name:"Bulgaria"},{code:"BF",name:"Burkina Faso"},{code:"BI",name:"Burundi"},{code:"KH",name:"Cambodia"},{code:"CM",name:"Cameroon"},{code:"CA",name:"Canada"},{code:"CV",name:"Cape Verde"},{code:"CF",name:"Central African Republic"},{code:"TD",name:"Chad"},{code:"CL",name:"Chile"},{code:"CN",name:"China"},{code:"CO",name:"Colombia"},{code:"KM",name:"Comoros"},{code:"CG",name:"Congo"},{code:"CD",name:"Congo (DRC)"},{code:"CR",name:"Costa Rica"},{code:"CI",name:"Côte d'Ivoire"},{code:"HR",name:"Croatia"},{code:"CU",name:"Cuba"},{code:"CY",name:"Cyprus"},{code:"CZ",name:"Czechia"},{code:"DK",name:"Denmark"},{code:"DJ",name:"Djibouti"},{code:"DM",name:"Dominica"},{code:"DO",name:"Dominican Republic"},{code:"EC",name:"Ecuador"},{code:"EG",name:"Egypt"},{code:"SV",name:"El Salvador"},{code:"GQ",name:"Equatorial Guinea"},{code:"ER",name:"Eritrea"},{code:"EE",name:"Estonia"},{code:"SZ",name:"Eswatini"},{code:"ET",name:"Ethiopia"},{code:"FJ",name:"Fiji"},{code:"FI",name:"Finland"},{code:"FR",name:"France"},{code:"GA",name:"Gabon"},{code:"GM",name:"Gambia"},{code:"GE",name:"Georgia"},{code:"DE",name:"Germany"},{code:"GH",name:"Ghana"},{code:"GR",name:"Greece"},{code:"GD",name:"Grenada"},{code:"GT",name:"Guatemala"},{code:"GN",name:"Guinea"},{code:"GW",name:"Guinea-Bissau"},{code:"GY",name:"Guyana"},{code:"HT",name:"Haiti"},{code:"HN",name:"Honduras"},{code:"HK",name:"Hong Kong"},{code:"HU",name:"Hungary"},{code:"IS",name:"Iceland"},{code:"IN",name:"India"},{code:"ID",name:"Indonesia"},{code:"IR",name:"Iran"},{code:"IQ",name:"Iraq"},{code:"IE",name:"Ireland"},{code:"IL",name:"Israel"},{code:"IT",name:"Italy"},{code:"JM",name:"Jamaica"},{code:"JP",name:"Japan"},{code:"JO",name:"Jordan"},{code:"KZ",name:"Kazakhstan"},{code:"KE",name:"Kenya"},{code:"KI",name:"Kiribati"},{code:"KW",name:"Kuwait"},{code:"KG",name:"Kyrgyzstan"},{code:"LA",name:"Laos"},{code:"LV",name:"Latvia"},{code:"LB",name:"Lebanon"},{code:"LS",name:"Lesotho"},{code:"LR",name:"Liberia"},{code:"LY",name:"Libya"},{code:"LI",name:"Liechtenstein"},{code:"LT",name:"Lithuania"},{code:"LU",name:"Luxembourg"},{code:"MO",name:"Macau"},{code:"MG",name:"Madagascar"},{code:"MW",name:"Malawi"},{code:"MY",name:"Malaysia"},{code:"MV",name:"Maldives"},{code:"ML",name:"Mali"},{code:"MT",name:"Malta"},{code:"MH",name:"Marshall Islands"},{code:"MR",name:"Mauritania"},{code:"MU",name:"Mauritius"},{code:"MX",name:"Mexico"},{code:"FM",name:"Micronesia"},{code:"MD",name:"Moldova"},{code:"MC",name:"Monaco"},{code:"MN",name:"Mongolia"},{code:"ME",name:"Montenegro"},{code:"MA",name:"Morocco"},{code:"MZ",name:"Mozambique"},{code:"MM",name:"Myanmar"},{code:"NA",name:"Namibia"},{code:"NR",name:"Nauru"},{code:"NP",name:"Nepal"},{code:"NL",name:"Netherlands"},{code:"NZ",name:"New Zealand"},{code:"NI",name:"Nicaragua"},{code:"NE",name:"Niger"},{code:"NG",name:"Nigeria"},{code:"KP",name:"North Korea"},{code:"MK",name:"North Macedonia"},{code:"NO",name:"Norway"},{code:"OM",name:"Oman"},{code:"PK",name:"Pakistan"},{code:"PW",name:"Palau"},{code:"PS",name:"Palestine"},{code:"PA",name:"Panama"},{code:"PG",name:"Papua New Guinea"},{code:"PY",name:"Paraguay"},{code:"PE",name:"Peru"},{code:"PH",name:"Philippines"},{code:"PL",name:"Poland"},{code:"PT",name:"Portugal"},{code:"QA",name:"Qatar"},{code:"RO",name:"Romania"},{code:"RU",name:"Russia"},{code:"RW",name:"Rwanda"},{code:"KN",name:"Saint Kitts and Nevis"},{code:"LC",name:"Saint Lucia"},{code:"VC",name:"Saint Vincent and the Grenadines"},{code:"WS",name:"Samoa"},{code:"SM",name:"San Marino"},{code:"ST",name:"São Tomé and Príncipe"},{code:"SA",name:"Saudi Arabia"},{code:"SN",name:"Senegal"},{code:"RS",name:"Serbia"},{code:"SC",name:"Seychelles"},{code:"SL",name:"Sierra Leone"},{code:"SG",name:"Singapore"},{code:"SK",name:"Slovakia"},{code:"SI",name:"Slovenia"},{code:"SB",name:"Solomon Islands"},{code:"SO",name:"Somalia"},{code:"ZA",name:"South Africa"},{code:"KR",name:"South Korea"},{code:"SS",name:"South Sudan"},{code:"ES",name:"Spain"},{code:"LK",name:"Sri Lanka"},{code:"SD",name:"Sudan"},{code:"SR",name:"Suriname"},{code:"SE",name:"Sweden"},{code:"CH",name:"Switzerland"},{code:"SY",name:"Syria"},{code:"TW",name:"Taiwan"},{code:"TJ",name:"Tajikistan"},{code:"TZ",name:"Tanzania"},{code:"TH",name:"Thailand"},{code:"TL",name:"Timor-Leste"},{code:"TG",name:"Togo"},{code:"TO",name:"Tonga"},{code:"TT",name:"Trinidad and Tobago"},{code:"TN",name:"Tunisia"},{code:"TR",name:"Turkey"},{code:"TM",name:"Turkmenistan"},{code:"TV",name:"Tuvalu"},{code:"UG",name:"Uganda"},{code:"UA",name:"Ukraine"},{code:"AE",name:"United Arab Emirates"},{code:"GB",name:"United Kingdom"},{code:"US",name:"United States"},{code:"UY",name:"Uruguay"},{code:"UZ",name:"Uzbekistan"},{code:"VU",name:"Vanuatu"},{code:"VA",name:"Vatican City"},{code:"VE",name:"Venezuela"},{code:"VN",name:"Vietnam"},{code:"YE",name:"Yemen"},{code:"ZM",name:"Zambia"},{code:"ZW",name:"Zimbabwe"}
+];
+
+let mode = "login";
+let busy = false;
+
+function getNextUrl(){
+  const next = params.get("next");
+  if (next) {
+    try {
+      const target = new URL(next, location.origin);
+      if (target.origin === location.origin && !target.pathname.endsWith("/auth.html")) {
+        return target.pathname + target.search + target.hash;
+      }
+    } catch {}
+  }
+  return "dashboard.html";
+}
+
+function showMessage(message, type = "success") {
+  const el = $("message");
+  el.textContent = message;
+  el.className = "message show " + type;
+}
+function clearMessage() {
+  $("message").className = "message";
+  $("message").textContent = "";
+}
+
+function setMode(nextMode){
+  mode = nextMode;
+  const signup = mode === "signup";
+  $("loginTab").classList.toggle("active", !signup);
+  $("signupTab").classList.toggle("active", signup);
+  $("heading").textContent = signup ? "Create your account" : "Welcome back";
+  $("subtitle").textContent = signup
+    ? "Join Firm Garage to save favorites and write reviews."
+    : "Log in to access your Firm Garage account.";
+  $("nameField").hidden = !signup;
+  $("countryField").hidden = !signup;
+  $("fullName").required = signup;
+  $("password").autocomplete = signup ? "new-password" : "current-password";
+  $("submitButton").textContent = signup ? "Create account" : "Log in";
+  $("forgotButton").hidden = signup;
+  $("pwHelp").hidden = !signup; $("consentRow").hidden = !signup;
+  clearMessage();
+  if (signup) resetCountryPicker();
+}
+
+function showAccount(user){
+  $("authPanel").hidden = true;
+  $("accountPanel").hidden = false;
+  $("accountEmail").textContent = user.email || "—";
+  const country = user.user_metadata?.country;
+  if (country) {
+    const found = COUNTRIES.find(c => c.code === country);
+    $("accountCountry").textContent = found ? found.name : country;
+  } else {
+    $("accountCountry").textContent = "—";
+  }
+}
+function showAuth(){
+  $("authPanel").hidden = false;
+  $("accountPanel").hidden = true;
+}
+
+function friendlyError(error){
+  const msg = error?.message || "Something went wrong. Please try again.";
+  if (/invalid login credentials/i.test(msg)) return "Email or password is incorrect. If you just registered, confirm your email first.";
+  if (/email not confirmed/i.test(msg)) return "Please confirm your email using the link we sent you.";
+  if (/already registered/i.test(msg)) return "This email already has an account. Try logging in instead.";
+  if (/rate limit/i.test(msg)) return "Too many attempts. Please wait a moment and try again.";
+  return msg;
+}
+
+/* COUNTRY PICKER */
+const countryPicker = $("countryPicker");
+const countrySearch = $("countrySearch");
+const countryResults = $("countryResults");
+const countryHidden = $("country");
+let countryHighlight = -1;
+let filteredCountries = COUNTRIES;
+
+function resetCountryPicker(){
+  countrySearch.value = "";
+  countryHidden.value = "";
+  countrySearch.readOnly = true;
+  countryPicker.classList.remove("open");
+  countryResults.innerHTML = "";
+  countryHighlight = -1;
+  filteredCountries = COUNTRIES;
+}
+function renderCountryResults(list){
+  filteredCountries = list;
+  if (!list.length) { countryResults.innerHTML = `<div class="country-empty">No countries found</div>`; return; }
+  countryResults.innerHTML = list.map((c, i) =>
+    `<div class="country-result${i === countryHighlight ? "" : ""}${c.code === countryHidden.value ? " selected" : ""}" data-code="${c.code}">${c.name}</div>`
+  ).join("");
+}
+function openCountryPicker(){
+  countrySearch.readOnly = false;
+  countryPicker.classList.add("open");
+  const q = countrySearch.value.toLowerCase().trim();
+  const list = q ? COUNTRIES.filter(c => c.name.toLowerCase().includes(q)) : COUNTRIES;
+  countryHighlight = -1;
+  renderCountryResults(list);
+}
+function closeCountryPicker(){
+  countrySearch.readOnly = true;
+  countryPicker.classList.remove("open");
+  countryHighlight = -1;
+}
+function selectCountry(country){
+  countryHidden.value = country.code;
+  countrySearch.value = country.name;
+  closeCountryPicker();
+  countrySearch.blur();
+}
+
+countrySearch.addEventListener("focus", openCountryPicker);
+countrySearch.addEventListener("click", openCountryPicker);
+countrySearch.addEventListener("input", () => {
+  const q = countrySearch.value.toLowerCase().trim();
+  const list = q ? COUNTRIES.filter(c => c.name.toLowerCase().includes(q)) : COUNTRIES;
+  countryHighlight = -1;
+  renderCountryResults(list);
+});
+countrySearch.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown") { e.preventDefault(); countryHighlight = Math.min(countryHighlight + 1, filteredCountries.length - 1); renderCountryResults(filteredCountries); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); countryHighlight = Math.max(countryHighlight - 1, 0); renderCountryResults(filteredCountries); }
+  else if (e.key === "Enter") { e.preventDefault(); if (countryHighlight >= 0 && filteredCountries[countryHighlight]) selectCountry(filteredCountries[countryHighlight]); else if (filteredCountries.length === 1) selectCountry(filteredCountries[0]); }
+  else if (e.key === "Escape") { closeCountryPicker(); countrySearch.blur(); }
+});
+countryResults.addEventListener("click", (e) => {
+  const row = e.target.closest(".country-result");
+  if (!row) return;
+  const country = COUNTRIES.find(c => c.code === row.dataset.code);
+  if (country) selectCountry(country);
+});
+document.addEventListener("click", (e) => {
+  if (!countryPicker.contains(e.target)) closeCountryPicker();
+});
+
+/* AUTH */
+$("loginTab").addEventListener("click", () => setMode("login"));
+$("signupTab").addEventListener("click", () => setMode("signup"));
+
+
+/* ---- password strength (client-side UX; ALSO enforce min length + leaked-password check in Supabase Auth settings) ---- */
+const COMMON = ["password","123456","qwerty","letmein","welcome","admin","iloveyou","fundededge","firmgarage","trading","forex"];
+function passwordScore(p){
+  let c = 0; if (/[a-z]/.test(p)) c++; if (/[A-Z]/.test(p)) c++; if (/\d/.test(p)) c++; if (/[^A-Za-z0-9]/.test(p)) c++;
+  let s = Math.min(p.length, 20) + c * 4;
+  if (/(.)\1{3,}/.test(p) || /(0123|1234|2345|abcd|qwer)/i.test(p)) s -= 8;
+  return s;
+}
+function passwordProblem(p, email){
+  if (p.length < 12) return "Use at least 12 characters.";
+  if (p.length > 128) return "Password is too long (max 128).";
+  const classes = [/[a-z]/,/[A-Z]/,/\d/,/[^A-Za-z0-9]/].filter(r => r.test(p)).length;
+  if (classes < 3 && p.length < 16) return "Use 3 of: lowercase, uppercase, numbers, symbols — or a passphrase of 16+ characters.";
+  const low = p.toLowerCase(), local = (email || "").split("@")[0].toLowerCase();
+  if (COMMON.some(w => low.includes(w)) || (local.length > 3 && low.includes(local))) return "That password is too easy to guess. Avoid common words or your email.";
+  return "";
+}
+$("password").addEventListener("input", () => {
+  if (mode !== "signup") return;
+  const s = passwordScore($("password").value), w = Math.max(5, Math.min(100, s * 3));
+  $("pwBar").style.width = w + "%"; $("pwBar").style.background = w < 45 ? "#f87171" : w < 75 ? "#f5c451" : "#34d399";
+  $("pwTxt").textContent = passwordProblem($("password").value, $("email").value) || "Strong password ✓";
+});
+
+$("authForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (busy) return;
+
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  const fullName = $("fullName").value.trim();
+  const country = countryHidden.value;
+
+  if (!password) { showMessage("Please enter your password.", "error"); return; }
+  if (mode === "signup") {
+    const pe = passwordProblem(password, email);
+    if (pe) { showMessage(pe, "error"); return; }
+    if (!$("consent").checked) { showMessage("Please accept the Terms, Privacy Policy and Risk Disclosure to continue.", "error"); return; }
+  }
+  if (mode === "signup" && !fullName) { showMessage("Please enter your name.", "error"); return; }
+  if (mode === "signup" && !country) { showMessage("Please select your country.", "error"); return; }
+
+  busy = true;
+  $("submitButton").disabled = true;
+  $("submitButton").textContent = "Please wait…";
+  clearMessage();
+
+  try {
+    if (mode === "signup") {
+      const { data, error } = await db.auth.signUp({
+        email, password,
+        options: {
+          data: { full_name: fullName, country: country },
+          emailRedirectTo: location.origin + location.pathname
+        }
+      });
+      if (error) throw error;
+      if (data.session && data.user) {
+        location.assign(getNextUrl());
+      } else {
+        showMessage("Account created. Check your inbox and spam folder, then click the verification link before logging in.");
+      }
+    } else {
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      if (!data.user?.email_confirmed_at) {
+        await db.auth.signOut();
+        showMessage("Please verify your email before continuing.", "error");
+        return;
+      }
+      const { data: aal } = await db.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") { location.assign("mfa.html?next=" + encodeURIComponent(getNextUrl())); return; }
+      location.assign(getNextUrl());
+    }
+  } catch (error) {
+    showMessage(friendlyError(error), "error");
+  } finally {
+    busy = false;
+    $("submitButton").disabled = false;
+    $("submitButton").textContent = mode === "signup" ? "Create account" : "Log in";
+  }
+});
+
+$("forgotButton").addEventListener("click", async () => {
+  const email = $("email").value.trim();
+  if (!email) { showMessage("Enter your email address first.", "error"); $("email").focus(); return; }
+  try {
+    const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    if (error) throw error;
+    showMessage("If an account exists for that email, a password-reset link will be sent.");
+  } catch (error) { showMessage(friendlyError(error), "error"); }
+});
+
+$("continueButton").addEventListener("click", () => location.assign(getNextUrl()));
+
+$("logoutButton").addEventListener("click", async () => {
+  const { error } = await db.auth.signOut();
+  if (error) { $("accountMessage").textContent = error.message; $("accountMessage").className = "message show error"; return; }
+  showAuth();
+  setMode("login");
+  showMessage("You have logged out successfully.");
+});
+
+/* MODE FROM URL */
+const requestedMode = params.get("mode");
+if (requestedMode === "signup" || requestedMode === "signin") {
+  setMode(requestedMode === "signup" ? "signup" : "login");
+}
+
+/* SESSION CHECK */
+const { data: { session } } = await db.auth.getSession();
+if (session?.user?.email_confirmed_at) {
+  showAccount(session.user);
+} else {
+  showAuth();
+  if (params.get("verified") === "1") {
+    showMessage("Email verification complete. Please log in to continue.");
+  }
+}
+
+db.auth.onAuthStateChange((_event, session) => {
+  if (session?.user?.email_confirmed_at) showAccount(session.user);
+  else showAuth();
+});
+</script>
+</body>
+</html>

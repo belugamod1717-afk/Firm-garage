@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Firm Garage — Compare Prop Trading Firms</title><meta name="description" content="Compare prop trading firms side by side: profit targets, drawdown rules, profit splits and pricing. Independent research for traders."><meta name="theme-color" content="#050b1a">
+<link rel="icon" type="image/png" href="/assets/images/logo.png"><link rel="apple-touch-icon" href="/assets/images/logo.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Firm Garage"><meta property="og:title" content="Firm Garage — Compare Prop Trading Firms"><meta property="og:description" content="Compare prop trading firms side by side: profit targets, drawdown rules, profit splits and pricing. Independent research for traders.">
+<meta property="og:url" content="https://firm-garage-two.vercel.app/index.html"><meta property="og:image" content="https://firm-garage-two.vercel.app/assets/images/og-image.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/styles/variables.css"><link rel="stylesheet" href="/src/styles/base.css"><link rel="stylesheet" href="/src/styles/components.css">
+</head><body>
+<script src="/src/config/siteConfig.js"></script>
+<script src="/src/components/common/layout.js"></script>
+
+<main>
+<section class="fg-hero"><div class="fg-wrap fg-center">
+  <span class="fg-eyebrow">Independent prop firm research</span>
+  <h1 class="fg-h1">Choose your prop firm<br>with clear numbers, not guesswork.</h1>
+  <p class="fg-lead">Firm Garage helps traders compare profit targets, drawdown rules, profit splits and pricing across prop firms, then manage their research in one dashboard.</p>
+  <form class="fg-search" id="homeSearch" role="search"><label for="q" class="sr" style="position:absolute;left:-9999px">Search prop firms</label><input id="q" name="q" type="search" placeholder="Search a prop firm by name…" autocomplete="off" maxlength="80"><button class="fg-btn solid" type="submit">Search</button></form>
+  <p style="margin-top:14px;font-size:13px;color:var(--text-mute)" id="firmCount">&nbsp;</p>
+</div></section>
+
+<section class="fg-section alt" id="featured"><div class="fg-wrap">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:24px"><div><span class="fg-eyebrow">Featured</span><h2 class="fg-h2">Top-rated prop firms</h2></div><a class="fg-btn" href="/firms.html">View all firms</a></div>
+  <div class="fg-grid g3" id="featuredGrid"><div class="fg-skel"></div><div class="fg-skel"></div><div class="fg-skel"></div></div>
+</div></section>
+
+<section class="fg-section"><div class="fg-wrap">
+  <div class="fg-center" style="margin-bottom:28px"><span class="fg-eyebrow">Comparison preview</span><h2 class="fg-h2">The rules that matter, side by side</h2><p class="fg-lead">A snapshot from our directory. Open the full comparison tool inside your free dashboard.</p></div>
+  <div id="previewBox"><div class="fg-skel" style="height:200px"></div></div>
+  <div class="fg-center" style="margin-top:22px"><a class="fg-btn solid lg" href="/dashboard.html?page=compare">Open comparison tool</a></div>
+</div></section>
+
+<section class="fg-section alt"><div class="fg-wrap">
+  <div class="fg-center" style="margin-bottom:32px"><span class="fg-eyebrow">Why Firm Garage</span><h2 class="fg-h2">Built for traders who read the fine print</h2></div>
+  <div class="fg-grid g4">
+    <div class="fg-card"><div class="fg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/></svg></div><h3>Side-by-side clarity</h3><p>Drawdown, targets, splits and fees in one consistent format.</p></div>
+    <div class="fg-card"><div class="fg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>Independent</h3><p>We are not a prop firm or broker. Affiliate relationships are disclosed.</p></div>
+    <div class="fg-card"><div class="fg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg></div><h3>Trader tools</h3><p>Journal, risk and payout calculators live in your private dashboard.</p></div>
+    <div class="fg-card"><div class="fg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><h3>Honest data</h3><p>If a rule is unknown we say “Not specified” rather than guess.</p></div>
+  </div>
+</div></section>
+
+<section class="fg-section" id="how"><div class="fg-wrap">
+  <div class="fg-center" style="margin-bottom:32px"><span class="fg-eyebrow">How it works</span><h2 class="fg-h2">From research to decision in three steps</h2></div>
+  <div class="fg-grid g3 fg-steps">
+    <div class="fg-step"><h3>Discover</h3><p style="color:var(--text-dim)">Search the directory and open any firm for its full rule breakdown.</p></div>
+    <div class="fg-step"><h3>Compare</h3><p style="color:var(--text-dim)">Save firms and compare up to three side by side in your dashboard.</p></div>
+    <div class="fg-step"><h3>Review</h3><p style="color:var(--text-dim)">Share your experience to help other traders, and keep a private trading journal.</p></div>
+  </div>
+</div></section>
+
+<section class="fg-section" style="padding-top:0"><div class="fg-wrap"><div class="fg-cta">
+  <h2 class="fg-h2">Ready to compare?</h2><p class="fg-lead" style="margin:0 auto 22px">Browse the directory for free, or create an account to unlock the dashboard.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><a class="fg-btn solid lg" href="/firms.html">Explore firms</a><a class="fg-btn lg" href="/auth.html?mode=signup">Create account</a></div>
+</div></div></section>
+</main>
+<script type="module">
+import { db } from "/src/services/supabase.js";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const val=v=>v&&String(v).trim()?esc(v):"Not specified";
+document.getElementById("homeSearch").addEventListener("submit",e=>{e.preventDefault();const q=document.getElementById("q").value.trim();location.href="/firms.html"+(q?"?q="+encodeURIComponent(q):"")});
+const initials=n=>String(n||"PF").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+const safeUrl=u=>{try{const x=new URL(u);return x.protocol==="https:"||x.protocol==="http:"?x.href:""}catch{return""}};
+function card(f){const lg=safeUrl(f.logo_url);return `<a class="fg-card fg-firm" href="/firm.html?id=${encodeURIComponent(f.id)}"><div class="fg-firm-head"><div class="fg-firm-logo">${lg?`<img src="${esc(lg)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:esc(initials(f.name))}</div><div><div class="fg-firm-cat">${esc(f.category||"Prop firm")}</div><div class="fg-firm-name">${esc(f.name)}</div></div>${f.rating?`<span class="fg-rate">★ ${esc(Number(f.rating).toFixed(1))}</span>`:""}</div>
+<p class="fg-firm-desc">${f.description?esc(f.description):"No description provided yet."}</p><div class="fg-kv"><div><small>Profit split</small><b>${val(f.profit_split)}</b></div><div><small>Max drawdown</small><b>${val(f.max_drawdown)}</b></div><div><small>Profit target</small><b>${val(f.profit_target)}</b></div><div><small>From</small><b>${val(f.price)}</b></div></div></a>`}
+try{
+  const {data,error}=await db.from("firms").select("*").eq("status","active").order("rating",{ascending:false,nullsFirst:false}).limit(6);
+  if(error)throw error;
+  const g=document.getElementById("featuredGrid"),p=document.getElementById("previewBox");
+  if(!data||!data.length){g.innerHTML='<div class="fg-state" style="grid-column:1/-1">No prop firms have been published yet. Check back soon.</div>';p.innerHTML=g.innerHTML}
+  else{
+    g.innerHTML=data.map(card).join("");
+    document.getElementById("firmCount").textContent="Browse "+data.length+"+ featured prop firms from our directory";
+    p.innerHTML=`<div class="fg-table-wrap"><table class="fg-table"><thead><tr><th>Firm</th><th>Profit split</th><th>Profit target</th><th>Daily drawdown</th><th>Max drawdown</th><th>From</th></tr></thead><tbody>${data.slice(0,3).map(f=>`<tr><td><a href="/firm.html?id=${encodeURIComponent(f.id)}" style="color:var(--accent);font-weight:600">${esc(f.name)}</a></td><td>${val(f.profit_split)}</td><td>${val(f.profit_target)}</td><td>${val(f.daily_drawdown)}</td><td>${val(f.max_drawdown)}</td><td>${val(f.price)}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+}catch(err){
+  const m='<div class="fg-state" style="grid-column:1/-1">We couldn’t load the directory right now. Please refresh, or try again shortly.</div>';
+  document.getElementById("featuredGrid").innerHTML=m;document.getElementById("previewBox").innerHTML=m;console.error(err);
+}
+</script></body></html>

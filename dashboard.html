@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0e11">
+<title>Dashboard — Firm Garage</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo.png">
+<link rel="apple-touch-icon" href="/assets/images/logo.png">
+<link rel="preconnect" href="https://esm.sh">
+<link rel="preconnect" href="https://mvltzznwdglwaedfzxze.supabase.co">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="dark"]{--bg:#0b0e11;--surface:#131820;--surface-2:#161c26;--surface-3:#1a2029;--line:#242b35;--line-2:#2f3846;--text:#e6ebf0;--text-dim:#a3aebd;--text-mute:#6b7787;--accent:#4a9eff;--accent-dim:#2f5f8f;--accent-bg:rgba(74,158,255,.08);--success:#4ade80;--gold:#e4b949;--danger:#ff6b6b;--shadow:0 8px 24px rgba(0,0,0,.4);}
+:root[data-theme="light"]{--bg:#f7f8fa;--surface:#ffffff;--surface-2:#f2f4f7;--surface-3:#e9ecf0;--line:#e1e5eb;--line-2:#d1d7de;--text:#1a1f26;--text-dim:#525c69;--text-mute:#8a94a0;--accent:#1e75e8;--accent-dim:#1857b3;--accent-bg:rgba(30,117,232,.08);--success:#16a34a;--gold:#c99b1e;--danger:#dc2626;--shadow:0 4px 12px rgba(0,0,0,.06);}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.topbar{height:56px;border-bottom:1px solid var(--line);background:var(--surface);display:flex;align-items:center;padding:0 20px;gap:16px;position:sticky;top:0;z-index:40;}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.3px;color:var(--text);flex-shrink:0;}
+.logo-mark{width:26px;height:26px;border-radius:6px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
+.logo span{color:var(--accent)}
+.topbar-spacer{flex:1}
+.topbar-search{position:relative;width:min(420px,40vw)}
+.topbar-search input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--line-2);border-radius:7px;background:var(--bg);color:var(--text);font-size:13.5px;outline:none;transition:.15s;}
+.topbar-search input:focus{border-color:var(--accent);background:var(--surface-2)}
+.topbar-search .s-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-mute);font-size:13px;pointer-events:none;}
+.search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;max-height:340px;overflow-y:auto;background:var(--surface);border:1px solid var(--line-2);border-radius:8px;box-shadow:var(--shadow);display:none;z-index:60;}
+.search-results.show{display:block}
+.search-result{padding:10px 14px;border-bottom:1px solid var(--line);font-size:13.5px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:.1s;}
+.search-result:last-child{border-bottom:0}
+.search-result:hover{background:var(--surface-2)}
+.search-result .name{font-weight:500}
+.search-result .cat{font-size:11px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.4px;}
+.search-result.empty{justify-content:center;color:var(--text-mute);cursor:default}
+.topbar-btn{width:34px;height:34px;border:1px solid var(--line-2);border-radius:7px;background:transparent;color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s;}
+.topbar-btn:hover{border-color:var(--accent-dim);color:var(--text)}
+.user-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 11px 5px 5px;border-radius:999px;border:1px solid var(--line-2);font-size:12.5px;font-weight:500;color:var(--text);transition:.15s;}
+.user-chip:hover{border-color:var(--accent-dim)}
+.user-initial{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;}
+.layout{display:flex;min-height:calc(100vh - 56px)}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--line);padding:16px 10px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;transition:margin .2s ease;}
+.sidebar.closed{margin-left:-220px}
+.nav-group{padding:14px 10px 6px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-mute);}
+.nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:0;background:transparent;color:var(--text-dim);text-align:left;font-size:13.5px;font-weight:500;border-radius:6px;margin:1px 0;transition:.12s;}
+.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item.active{background:var(--accent-bg);color:var(--accent)}
+.nav-item .ico{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+.nav-item .label{flex:1;min-width:0}
+.nav-item .count{font-size:11px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--surface-3);color:var(--text-mute);}
+.nav-item.active .count{background:var(--accent);color:#fff}
+.nav-item.logout{margin-top:12px;color:var(--danger)}
+main{flex:1;padding:28px clamp(16px,3vw,36px) 60px;min-width:0;max-width:1280px}
+.page{display:none}
+.page.active{display:block}
+.page-head{margin-bottom:24px}
+.page-head .kicker{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-mute);margin-bottom:8px;}
+.page-head h1{font-size:26px;font-weight:700;letter-spacing:-.6px;margin-bottom:6px;}
+.page-head p{color:var(--text-dim);font-size:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:6px;border:1px solid var(--line-2);background:transparent;color:var(--text);font-size:13px;font-weight:500;transition:.15s;text-decoration:none;white-space:nowrap;}
+.btn:hover{border-color:var(--accent-dim);background:var(--accent-bg);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn.primary:hover{background:var(--accent-dim);border-color:var(--accent-dim);color:#fff}
+.btn.danger{color:var(--danger)}
+.btn.danger:hover{background:rgba(255,107,107,.1);border-color:var(--danger);color:var(--danger)}
+.btn.small{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.stat-card .k{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--text-mute);margin-bottom:8px;}
+.stat-card .v{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--text);margin-bottom:2px;}
+.stat-card .sub{font-size:12px;color:var(--text-mute)}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:24px 0 14px;}
+.section-head h2{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.section-head .more{font-size:13px;color:var(--accent);font-weight:500;cursor:pointer}
+.section-head .more:hover{text-decoration:underline}
+.firm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.firm-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;transition:.15s;display:flex;flex-direction:column;}
+.firm-card:hover{border-color:var(--line-2);background:var(--surface-2)}
+.firm-card-head{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.firm-logo{width:40px;height:40px;border-radius:8px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;font-size:13px;font-weight:700;color:var(--accent);}
+.firm-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:5px;background:#fff}
+.firm-meta{flex:1;min-width:0}
+.firm-meta .cat{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-mute);margin-bottom:3px;}
+.firm-meta h3{font-size:14.5px;font-weight:600;color:var(--text);overflow-wrap:anywhere;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.badge{font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;padding:2px 7px;border-radius:4px;}
+.badge-verified{background:rgba(74,222,128,.12);color:var(--success);border:1px solid rgba(74,222,128,.25);}
+.badge-unverified{background:transparent;color:var(--text-mute);border:1px solid var(--line-2);}
+.firm-rating{font-size:11.5px;font-weight:600;color:var(--gold);flex-shrink:0}
+.firm-desc{font-size:12.5px;color:var(--text-dim);line-height:1.55;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.firm-rows{border-top:1px solid var(--line);padding-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-bottom:12px;}
+.firm-rows .k{font-size:10px;color:var(--text-mute);margin-bottom:2px;letter-spacing:.3px;text-transform:uppercase;}
+.firm-rows .v{font-size:12.5px;color:var(--text);font-weight:500;overflow-wrap:anywhere}
+.firm-actions{display:flex;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line);}
+.firm-actions .btn{flex:1;justify-content:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--text-dim);font-size:12.5px;font-weight:500;cursor:pointer;transition:.15s;}
+.chip:hover{border-color:var(--accent-dim);color:var(--text)}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.cmp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:16px;}
+.cmp-slot{position:relative;padding:14px;border:1px solid var(--line);background:var(--surface-2);border-radius:10px}
+.cmp-slot.filled{border-color:var(--accent);background:var(--accent-bg)}
+.cmp-slot-label{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-mute);margin-bottom:10px;}
+.cmp-slot-label .clear-x{background:transparent;border:0;color:var(--danger);font-size:14px;padding:0 4px;display:none;cursor:pointer;}
+.cmp-slot.filled .clear-x{display:inline-block}
+.cmp-search-wrap{position:relative}
+.cmp-search{width:100%;padding:9px 34px 9px 12px;border:1px solid var(--line-2);border-radius:7px;background:var(--bg);color:var(--text);font-size:13px;outline:none;transition:.15s;}
+.cmp-search:focus{border-color:var(--accent)}
+.cmp-search-ico{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--text-mute);font-size:13px;pointer-events:none;}
+.cmp-results{position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:260px;overflow-y:auto;background:var(--surface);border:1px solid var(--line-2);border-radius:8px;box-shadow:var(--shadow);display:none;z-index:30;}
+.cmp-results.show{display:block}
+.cmp-result{padding:9px 12px;font-size:13px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;gap:8px;transition:.1s;}
+.cmp-result:last-child{border-bottom:0}
+.cmp-result:hover{background:var(--surface-2)}
+.cmp-result .r-name{font-weight:500}
+.cmp-result .r-cat{font-size:10.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.4px;}
+.cmp-result.empty{justify-content:center;color:var(--text-mute);cursor:default}
+.cmp-chosen{margin-top:8px;font-size:12.5px;font-weight:500;color:var(--accent);display:none}
+.cmp-slot.filled .cmp-chosen{display:block}
+.cmp-table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin-top:16px;}
+.cmp-table{width:100%;min-width:520px;border-collapse:collapse;background:var(--surface)}
+.cmp-table th,.cmp-table td{padding:12px 14px;text-align:left;font-size:13px;border-bottom:1px solid var(--line);vertical-align:top;}
+.cmp-table th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-mute);background:var(--surface-2);white-space:nowrap;}
+.cmp-table th.head{color:var(--text);font-size:13px;text-transform:none;letter-spacing:0;}
+.cmp-table td:first-child{color:var(--text-mute);font-weight:500;background:var(--surface-2);white-space:nowrap;}
+.cmp-table tr:last-child td{border-bottom:0}
+.cmp-table .better{color:var(--success);font-weight:600}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.field{display:grid;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;font-weight:600;color:var(--text-dim)}
+.field input,.field select,.field textarea{padding:9px 12px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg);color:var(--text);font-size:13.5px;outline:none;transition:.15s;font-family:inherit;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:var(--surface-2)}
+.field textarea{min-height:80px;resize:vertical}
+.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.list{display:grid;gap:8px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;}
+.item .info{min-width:0;flex:1}
+.item .title{font-size:13.5px;font-weight:600}
+.item .sub{font-size:12px;color:var(--text-mute);margin-top:2px}
+.status{font-size:10.5px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--surface-3);color:var(--text-mute);}
+.status.approved{background:rgba(74,222,128,.12);color:var(--success)}
+.status.pending{background:rgba(228,185,73,.12);color:var(--gold)}
+.status.rejected{background:rgba(255,107,107,.12);color:var(--danger)}
+.pos{color:var(--success)}
+.neg{color:var(--danger)}
+.empty{padding:36px 20px;text-align:center;border:1px dashed var(--line-2);border-radius:10px;color:var(--text-dim);font-size:13.5px;}
+.detail-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-dim);background:transparent;border:0;padding:0;margin-bottom:16px;font-weight:500;cursor:pointer;}
+.detail-back:hover{color:var(--accent)}
+.detail-header{display:flex;gap:20px;align-items:flex-start;padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:28px;flex-wrap:wrap}
+.detail-logo{width:72px;height:72px;border-radius:12px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;font-size:22px;font-weight:700;color:var(--accent);}
+.detail-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:11px;background:#fff}
+.detail-header-meta{flex:1;min-width:0}
+.detail-cat{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-mute);margin-bottom:8px;}
+.detail-header-meta h1{font-size:28px;font-weight:700;letter-spacing:-.7px;margin:0 0 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.detail-header-meta .lead{font-size:14.5px;color:var(--text-dim);line-height:1.65;max-width:640px;margin-bottom:16px}
+.detail-actions{display:flex;gap:10px;flex-wrap:wrap}
+.detail-section{margin-bottom:32px}
+.detail-section .k{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-mute);margin-bottom:14px;}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.detail-cell{background:var(--surface);padding:16px}
+.detail-cell .ck{font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--text-mute);margin-bottom:6px;}
+.detail-cell .cv{font-size:15px;font-weight:600;color:var(--text);overflow-wrap:anywhere}
+.detail-note{font-size:12px;color:var(--text-mute);margin-top:14px;line-height:1.6}
+.tp-summary{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:24px;}
+@media (max-width:640px){.tp-summary{grid-template-columns:1fr;gap:20px}}
+.tp-summary-left{text-align:center;padding-right:32px;border-right:1px solid var(--line);}
+@media (max-width:640px){.tp-summary-left{padding-right:0;padding-bottom:20px;border-right:0;border-bottom:1px solid var(--line)}}
+.tp-avg{font-size:52px;font-weight:700;letter-spacing:-2px;line-height:1;margin-bottom:8px;}
+.tp-stars{color:var(--gold);font-size:16px;letter-spacing:2px;margin-bottom:6px;}
+.tp-count{font-size:12.5px;color:var(--text-mute);}
+.tp-summary-right{display:grid;gap:6px;}
+.tp-bar-row{display:grid;grid-template-columns:40px 1fr 44px;gap:12px;align-items:center;padding:4px 6px;background:transparent;border:0;cursor:pointer;text-align:left;transition:.15s;border-radius:6px;font-size:12px;}
+.tp-bar-row:hover{background:var(--surface-2)}
+.tp-bar-row.active{background:var(--accent-bg)}
+.tp-bar-lbl{color:var(--text-dim);font-weight:500}
+.tp-bar-track{height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden;}
+.tp-bar-track span{display:block;height:100%;background:var(--gold);border-radius:4px;transition:width .3s;}
+.tp-bar-count{color:var(--text-mute);text-align:right;font-weight:500}
+.tp-countries{margin-bottom:20px}
+.tp-countries-label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-mute);margin-bottom:10px;}
+.tp-country-chips{display:flex;gap:8px;flex-wrap:wrap}
+.tp-country-chip{padding:7px 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--text-dim);font-size:12.5px;font-weight:500;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px;}
+.tp-country-chip:hover{border-color:var(--accent-dim);color:var(--text)}
+.tp-country-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tp-country-chip span{font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--surface-3);color:var(--text-mute);}
+.tp-country-chip.active span{background:rgba(255,255,255,.2);color:#fff}
+.tp-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:18px;}
+.tp-toolbar-left{font-size:13px;color:var(--text-mute);font-weight:500}
+.tp-toolbar-right{display:flex;align-items:center;gap:8px}
+.tp-sort-label{font-size:12.5px;color:var(--text-mute);font-weight:500}
+.tp-sort-select{padding:6px 10px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg);color:var(--text);font-size:12.5px;font-weight:500;outline:none;cursor:pointer;}
+.tp-sort-select:focus{border-color:var(--accent)}
+.tp-review-list{display:grid;gap:12px}
+.tp-review-card{padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:10px;transition:.15s;}
+.tp-review-card:hover{border-color:var(--line-2)}
+.tp-review-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.tp-review-author{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
+.tp-review-avatar{width:44px;height:44px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;border:1px solid var(--accent-dim);}
+.tp-review-name{font-size:15px;font-weight:600;color:var(--text);line-height:1.3;}
+.tp-review-date{font-size:12px;color:var(--text-mute);margin-top:3px}
+.tp-review-corner{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
+.tp-review-country-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--text-dim);padding:4px 10px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);white-space:nowrap;}
+.tp-review-stars{color:var(--gold);font-size:14px;letter-spacing:1px;line-height:1;}
+.tp-review-text{font-size:13.5px;color:var(--text-dim);line-height:1.7;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;}
+.star-picker{display:inline-flex;gap:8px;margin-top:4px;margin-bottom:6px}
+.star-picker button{background:transparent;border:0;font-size:32px;line-height:1;color:var(--line-2);padding:0;transition:.1s}
+.star-picker button:hover,.star-picker button.on{color:var(--gold)}
+.star-label{font-size:12.5px;color:var(--text-mute);margin-bottom:16px;display:block}
+.review-form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.review-message{display:none;margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px}
+.review-message.show{display:block}
+.review-message.success{background:rgba(74,222,128,.1);color:var(--success)}
+.review-message.error{background:rgba(255,107,107,.1);color:var(--danger)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);color:var(--text);border:1px solid var(--line-2);padding:10px 16px;border-radius:8px;font-size:13.5px;font-weight:500;box-shadow:var(--shadow);z-index:300;}
+@media (max-width:900px){.sidebar{position:fixed;top:56px;bottom:0;height:auto;z-index:30;box-shadow:var(--shadow);}.sidebar.closed{margin-left:-240px}.topbar-search{display:none}}
+@media (max-width:600px){.topbar{padding:0 12px;gap:10px}.logo{font-size:14px}.logo-mark{width:22px;height:22px;font-size:11px}.user-chip span:last-child{display:none}main{padding:20px 14px 40px}.page-head h1{font-size:20px}.firm-grid{grid-template-columns:1fr;gap:10px}.cmp-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.detail-header{flex-direction:column}.detail-header-meta h1{font-size:22px}}
+</style>
+<link rel="stylesheet" href="/src/styles/variables.css">
+<link rel="stylesheet" href="/src/styles/base.css">
+<link rel="stylesheet" href="/src/styles/dashboard-tools.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="topbar-btn" id="toggleSidebar" aria-label="Menu">☰</button>
+  <a class="logo" href="dashboard.html"><span class="logo-mark">F</span>Firm<span>Garage</span></a>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-search">
+    <span class="s-ico">🔍</span>
+    <input id="globalSearch" type="text" placeholder="Search firms…" autocomplete="off">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  <button class="topbar-btn" id="themeToggle" title="Toggle theme">◐</button>
+  <a class="user-chip" href="dashboard.html" id="userChip"><span class="user-initial" id="userInitial">?</span><span id="userName">Loading…</span></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="nav-group">Workspace</div>
+    <button class="nav-item active" data-page="home"><span class="ico">▦</span><span class="label">Overview</span></button>
+    <button class="nav-item" data-page="firms"><span class="ico">▤</span><span class="label">Prop Firms</span><span class="count" id="navFirmsCount">—</span></button>
+    <button class="nav-item" data-page="favorites"><span class="ico">♡</span><span class="label">Saved Firms</span><span class="count" id="navFavCount">0</span></button>
+    
+    <a class="nav-item" href="mfa.html"><span class="ico">⚿</span><span class="label">Security (2FA)</span></a>
+    <button class="nav-item" data-page="compare"><span class="ico">⇄</span><span class="label">Compare Firms</span></button>
+    <button class="nav-item" data-page="tools"><span class="ico">∑</span><span class="label">Calculators</span></button>
+    <div class="nav-group">Trading</div>
+    <button class="nav-item" data-page="journal"><span class="ico">✎</span><span class="label">Trading Journal</span></button>
+    <button class="nav-item" data-page="stats"><span class="ico">▥</span><span class="label">Statistics</span></button>
+    <div class="nav-group">Account</div>
+    <button class="nav-item" data-page="reviews"><span class="ico">☆</span><span class="label">My Reviews</span></button>
+    <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span class="label">Settings</span></button>
+    <button class="nav-item logout" id="logoutBtn"><span class="ico">⇥</span><span class="label">Sign out</span></button>
+  </aside>
+
+  <main>
+    <section class="page active" id="page-home">
+      <div class="page-head"><div class="kicker">Dashboard</div><h1>Welcome back, <span id="memberName">Trader</span></h1><p>Your prop firm research and trading workspace.</p></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="k">Favorites</div><div class="v" id="favoriteCount">0</div><div class="sub">Saved firms</div></div>
+        <div class="stat-card"><div class="k">Comparisons</div><div class="v" id="comparisonCount">0</div><div class="sub">Saved comparisons</div></div>
+        <div class="stat-card"><div class="k">Journal trades</div><div class="v" id="tradeCount">0</div><div class="sub">Recorded trades</div></div>
+        <div class="stat-card"><div class="k">My reviews</div><div class="v" id="reviewCount">0</div><div class="sub">Submitted reviews</div></div>
+      </div>
+      <div class="section-head"><h2>Your favorites</h2><span class="more" data-go="favorites">View all →</span></div>
+      <div class="firm-grid" id="homeFavorites"></div>
+      <div class="section-head"><h2>Recent journal entries</h2><span class="more" data-go="journal">Open journal →</span></div>
+      <div class="list" id="recentTrades"></div>
+    </section>
+
+    <section class="page" id="page-firms">
+      <div class="page-head"><div class="kicker">Research</div><h1>Prop Firms</h1><p>Click View to open the full firm profile.</p></div>
+      <div class="chips" id="firmChips">
+        <button class="chip active" data-filter="all">All <span id="chipAllCount">0</span></button>
+        <button class="chip" data-filter="Forex / CFD">Forex</button>
+        <button class="chip" data-filter="Futures">Futures</button>
+        <button class="chip" data-filter="Crypto">Crypto</button>
+        <button class="chip" data-filter="top">Top rated</button>
+        <button class="chip" data-filter="verified">Verified</button>
+      </div>
+      <div class="firm-grid" id="allFirms"></div>
+    </section>
+
+    <section class="page" id="page-favorites">
+      <div class="page-head"><div class="kicker">Shortlist</div><h1>Saved Firms</h1><p>Firms you've saved to review later.</p></div>
+      <div class="firm-grid" id="favoritesList"></div>
+    </section>
+
+    <section class="page" id="page-compare">
+      <div class="page-head"><div class="kicker">Tool</div><h1>Compare firms</h1><p>Pick up to 3 firms to compare rules side by side.</p></div>
+      <div class="panel">
+        <div class="cmp-grid">
+          <div class="cmp-slot" id="cmpSlot1"><div class="cmp-slot-label"><span>Firm 1</span><button class="clear-x" data-clear="1">✕</button></div><div class="cmp-search-wrap"><input class="cmp-search" id="cmpSearch1" placeholder="Search…" autocomplete="off"><span class="cmp-search-ico">🔍</span><div class="cmp-results" id="cmpResults1"></div></div><div class="cmp-chosen" id="cmpChosen1">—</div></div>
+          <div class="cmp-slot" id="cmpSlot2"><div class="cmp-slot-label"><span>Firm 2</span><button class="clear-x" data-clear="2">✕</button></div><div class="cmp-search-wrap"><input class="cmp-search" id="cmpSearch2" placeholder="Search…" autocomplete="off"><span class="cmp-search-ico">🔍</span><div class="cmp-results" id="cmpResults2"></div></div><div class="cmp-chosen" id="cmpChosen2">—</div></div>
+          <div class="cmp-slot" id="cmpSlot3"><div class="cmp-slot-label"><span>Firm 3</span><button class="clear-x" data-clear="3">✕</button></div><div class="cmp-search-wrap"><input class="cmp-search" id="cmpSearch3" placeholder="Search…" autocomplete="off"><span class="cmp-search-ico">🔍</span><div class="cmp-results" id="cmpResults3"></div></div><div class="cmp-chosen" id="cmpChosen3">—</div></div>
+        </div>
+        <div class="form-actions"><button class="btn primary" id="cmpRun">Compare</button><button class="btn" id="cmpClear">Clear all</button></div>
+        <div id="cmpResult"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-journal">
+      <div class="page-head"><div class="kicker">Trading</div><h1>Journal</h1><p>Record trades and track your execution.</p></div>
+      <div class="panel" style="margin-bottom:20px">
+        <div class="section-head" style="margin:0 0 14px"><h2 id="formTitle">Add a trade</h2></div>
+        <form id="tradeForm">
+          <input id="tradeId" type="hidden">
+          <div class="form-grid">
+            <div class="field"><label>Date *</label><input id="tradeDate" type="date" required></div>
+            <div class="field"><label>Symbol *</label><input id="symbol" placeholder="GBPJPY" maxlength="30" required></div>
+            <div class="field"><label>Direction *</label><select id="direction"><option>Buy</option><option>Sell</option></select></div>
+            <div class="field"><label>Result *</label><select id="result"><option>Win</option><option>Loss</option><option>Breakeven</option></select></div>
+            <div class="field"><label>Entry</label><input id="entry" type="number" step="any"></div>
+            <div class="field"><label>Exit</label><input id="exit" type="number" step="any"></div>
+            <div class="field"><label>Stop loss</label><input id="sl" type="number" step="any"></div>
+            <div class="field"><label>Take profit</label><input id="tp" type="number" step="any"></div>
+            <div class="field"><label>Risk ($)</label><input id="risk" type="number" min="0" step="any"></div>
+            <div class="field"><label>P/L ($) *</label><input id="pnl" type="number" step="any" required placeholder="Negative for loss"></div>
+            <div class="field"><label>Strategy</label><input id="strategy" maxlength="120" placeholder="Breakout, etc."></div>
+            <div class="field"><label>Mindset</label><select id="emotion"><option value="">Choose</option><option>Focused</option><option>Confident</option><option>Patient</option><option>Fearful</option><option>Greedy</option><option>Revenge trading</option><option>Distracted</option></select></div>
+            <div class="field full"><label>Notes</label><textarea id="notes" maxlength="5000" placeholder="Why did you take this trade?"></textarea></div>
+          </div>
+          <div class="form-actions"><button class="btn primary" id="saveTrade" type="submit">Save trade</button><button class="btn" type="button" id="cancelEdit" hidden>Cancel edit</button></div>
+        </form>
+      </div>
+      <div class="section-head"><h2>History</h2></div>
+      <div class="list" id="tradeList"></div>
+    </section>
+
+    <section class="page" id="page-stats">
+      <div class="page-head"><div class="kicker">Performance</div><h1>Journal statistics</h1><p>A summary of trades recorded in your journal.</p></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="k">Win rate</div><div class="v" id="winRate">0%</div></div>
+        <div class="stat-card"><div class="k">Net P/L</div><div class="v" id="netPnl">$0.00</div></div>
+        <div class="stat-card"><div class="k">Avg trade</div><div class="v" id="avgPnl">$0.00</div></div>
+      </div>
+      <div class="panel"><div class="list">
+        <div class="item"><span class="title">Winning trades</span><b id="wins">0</b></div>
+        <div class="item"><span class="title">Losing trades</span><b id="losses">0</b></div>
+        <div class="item"><span class="title">Breakeven trades</span><b id="breakevens">0</b></div>
+        <div class="item"><span class="title">Total trades</span><b id="totalTrades">0</b></div>
+      </div></div>
+    </section>
+
+    <section class="page" id="page-reviews">
+      <div class="page-head"><div class="kicker">Community</div><h1>My reviews</h1><p>Reviews you've submitted and their status.</p></div>
+      <div class="list" id="reviewsList"></div>
+    </section>
+
+    <section class="page" id="page-tools">
+      <div class="page-head"><div class="kicker">Tools</div><h1>Trading calculators</h1><p>Risk-to-reward and margin, drawdown limits, and payout estimates. Calculated privately in your browser.</p></div>
+      <div id="toolsRoot"></div>
+    </section>
+
+    <section class="page" id="page-settings">
+      <div class="page-head"><div class="kicker">Account</div><h1>Settings</h1></div>
+      <div class="panel"><div class="list">
+        <div class="item"><div class="info"><div class="title">Email</div><div class="sub" id="settingEmail">—</div></div><span class="status approved">Confirmed</span></div>
+        <div class="item"><div class="info"><div class="title">Display name</div><div class="sub" id="settingName">—</div></div></div>
+        <div class="item"><div class="info"><div class="title">Country</div><div class="sub" id="settingCountry">—</div></div></div>
+        <div class="item"><div class="info"><div class="title">Theme</div><div class="sub" id="settingTheme">—</div></div><button class="btn small" id="themeToggle2">Change</button></div>
+      </div></div>
+    </section>
+
+    <section class="page" id="page-firm">
+      <div id="firmDetailContent"></div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" hidden></div>
+
+
+<script type="module">
+import { db } from "/src/services/supabase.js";
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const COUNTRY_NAMES = {AF:"Afghanistan",AL:"Albania",DZ:"Algeria",AD:"Andorra",AO:"Angola",AR:"Argentina",AM:"Armenia",AU:"Australia",AT:"Austria",AZ:"Azerbaijan",BH:"Bahrain",BD:"Bangladesh",BY:"Belarus",BE:"Belgium",BZ:"Belize",BJ:"Benin",BT:"Bhutan",BO:"Bolivia",BA:"Bosnia and Herzegovina",BW:"Botswana",BR:"Brazil",BN:"Brunei",BG:"Bulgaria",BF:"Burkina Faso",BI:"Burundi",KH:"Cambodia",CM:"Cameroon",CA:"Canada",CV:"Cape Verde",CF:"Central African Republic",TD:"Chad",CL:"Chile",CN:"China",CO:"Colombia",KM:"Comoros",CG:"Congo",CD:"Congo (DRC)",CR:"Costa Rica",CI:"Côte d'Ivoire",HR:"Croatia",CU:"Cuba",CY:"Cyprus",CZ:"Czechia",DK:"Denmark",DJ:"Djibouti",DM:"Dominica",DO:"Dominican Republic",EC:"Ecuador",EG:"Egypt",SV:"El Salvador",GQ:"Equatorial Guinea",ER:"Eritrea",EE:"Estonia",SZ:"Eswatini",ET:"Ethiopia",FJ:"Fiji",FI:"Finland",FR:"France",GA:"Gabon",GM:"Gambia",GE:"Georgia",DE:"Germany",GH:"Ghana",GR:"Greece",GD:"Grenada",GT:"Guatemala",GN:"Guinea",GW:"Guinea-Bissau",GY:"Guyana",HT:"Haiti",HN:"Honduras",HK:"Hong Kong",HU:"Hungary",IS:"Iceland",IN:"India",ID:"Indonesia",IR:"Iran",IQ:"Iraq",IE:"Ireland",IL:"Israel",IT:"Italy",JM:"Jamaica",JP:"Japan",JO:"Jordan",KZ:"Kazakhstan",KE:"Kenya",KI:"Kiribati",KW:"Kuwait",KG:"Kyrgyzstan",LA:"Laos",LV:"Latvia",LB:"Lebanon",LS:"Lesotho",LR:"Liberia",LY:"Libya",LI:"Liechtenstein",LT:"Lithuania",LU:"Luxembourg",MO:"Macau",MG:"Madagascar",MW:"Malawi",MY:"Malaysia",MV:"Maldives",ML:"Mali",MT:"Malta",MH:"Marshall Islands",MR:"Mauritania",MU:"Mauritius",MX:"Mexico",FM:"Micronesia",MD:"Moldova",MC:"Monaco",MN:"Mongolia",ME:"Montenegro",MA:"Morocco",MZ:"Mozambique",MM:"Myanmar",NA:"Namibia",NR:"Nauru",NP:"Nepal",NL:"Netherlands",NZ:"New Zealand",NI:"Nicaragua",NE:"Niger",NG:"Nigeria",KP:"North Korea",MK:"North Macedonia",NO:"Norway",OM:"Oman",PK:"Pakistan",PW:"Palau",PS:"Palestine",PA:"Panama",PG:"Papua New Guinea",PY:"Paraguay",PE:"Peru",PH:"Philippines",PL:"Poland",PT:"Portugal",QA:"Qatar",RO:"Romania",RU:"Russia",RW:"Rwanda",KN:"Saint Kitts and Nevis",LC:"Saint Lucia",VC:"Saint Vincent and the Grenadines",WS:"Samoa",SM:"San Marino",ST:"São Tomé and Príncipe",SA:"Saudi Arabia",SN:"Senegal",RS:"Serbia",SC:"Seychelles",SL:"Sierra Leone",SG:"Singapore",SK:"Slovakia",SI:"Slovenia",SB:"Solomon Islands",SO:"Somalia",ZA:"South Africa",KR:"South Korea",SS:"South Sudan",ES:"Spain",LK:"Sri Lanka",SD:"Sudan",SR:"Suriname",SE:"Sweden",CH:"Switzerland",SY:"Syria",TW:"Taiwan",TJ:"Tajikistan",TZ:"Tanzania",TH:"Thailand",TL:"Timor-Leste",TG:"Togo",TO:"Tonga",TT:"Trinidad and Tobago",TN:"Tunisia",TR:"Turkey",TM:"Turkmenistan",TV:"Tuvalu",UG:"Uganda",UA:"Ukraine",AE:"United Arab Emirates",GB:"United Kingdom",US:"United States",UY:"Uruguay",UZ:"Uzbekistan",VU:"Vanuatu",VA:"Vatican City",VE:"Venezuela",VN:"Vietnam",YE:"Yemen",ZM:"Zambia",ZW:"Zimbabwe"};
+
+function countryFlag(code){
+  if (!code || code.length !== 2) return "";
+  const A = 0x1F1E6;
+  return String.fromCodePoint(A + code.charCodeAt(0) - 65, A + code.charCodeAt(1) - 65);
+}
+
+const THEME_KEY = "Firm Garage-theme";
+function getStoredTheme(){ return localStorage.getItem(THEME_KEY) || "dark"; }
+function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(THEME_KEY, t); const s=$("settingTheme"); if(s) s.textContent = t === "dark" ? "Dark" : "Light"; }
+function toggleTheme(){ applyTheme(getStoredTheme() === "dark" ? "light" : "dark"); }
+applyTheme(getStoredTheme());
+$("themeToggle").addEventListener("click", toggleTheme);
+$("themeToggle2").addEventListener("click", toggleTheme);
+
+let user = null, trades = [], toastTimer, firmsLoaded = false;
+let allFirmsCache = [], compareFirmsCache = [];
+const compareSlots = {1:null, 2:null, 3:null};
+let currentChip = "all";
+let previousPage = "firms";
+let currentFirmCache = null;
+let currentFirmView = null; // "firm" | "reviews" | "write"
+
+function toast(msg){ const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.hidden = true, 3000); }
+function emptyEl(id, msg){ const el = $(id); if (el) el.innerHTML = `<div class="empty">${esc(msg)}</div>`; }
+
+function getLogoDomain(firm){
+  const name = (firm.name || "").toLowerCase().trim();
+  const known = {"ftmo":"ftmo.com","the5ers":"the5ers.com","the 5ers":"the5ers.com","topstep":"topstep.com","apex trader funding":"apextraderfunding.com"};
+  if (known[name]) return known[name];
+  try { const u = new URL(firm.official_website || ""); if (u.protocol === "https:" || u.protocol === "http:") return u.hostname; } catch(_) {}
+  return "";
+}
+function getInitials(name){ const words = String(name || "PF").trim().split(/\s+/).filter(Boolean); return words.length > 1 ? (words[0][0] + words[1][0]).toUpperCase() : (words[0] || "PF").slice(0,2).toUpperCase(); }
+function logoURL(firm){ const d = getLogoDomain(firm); return firm.logo_url || (d ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128` : ""); }
+
+/* URL helpers */
+function pushUrl(params){
+  const url = new URL(location.href);
+  url.search = "";
+  for (const [k,v] of Object.entries(params)) {
+    if (v) url.searchParams.set(k, v);
+  }
+  history.pushState(params, "", url);
+}
+function replaceUrl(params){
+  const url = new URL(location.href);
+  url.search = "";
+  for (const [k,v] of Object.entries(params)) {
+    if (v) url.searchParams.set(k, v);
+  }
+  history.replaceState(params, "", url);
+}
+
+function go(page){
+  if (page !== "firm") {
+    currentFirmView = null;
+    replaceUrl(page === "home" ? {} : { page: page });
+  }
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "page-" + page));
+  document.querySelectorAll(".nav-item[data-page]").forEach(b => b.classList.toggle("active", b.dataset.page === page && page !== "firm"));
+  if (innerWidth <= 900) $("sidebar").classList.add("closed");
+  if (page === "stats") updateStats();
+  if (page === "compare") loadCompareCache();
+  if (page === "firms" && !firmsLoaded) { firmsLoaded = true; loadAllFirms(); }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.querySelectorAll(".nav-item[data-page]").forEach(b => b.onclick = () => go(b.dataset.page));
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+$("toggleSidebar").onclick = () => $("sidebar").classList.toggle("closed");
+if (innerWidth <= 900) $("sidebar").classList.add("closed");
+$("logoutBtn").onclick = async () => { await db.auth.signOut(); location.replace("index.html"); };
+
+function firmCard(firm, savedIds){
+  const isSaved = savedIds ? savedIds.has(String(firm.id)) : false;
+  const rating = firm.rating ? `★ ${firm.rating}` : "—";
+  const badge = firm.verified ? `<span class="badge badge-verified">Verified</span>` : `<span class="badge badge-unverified">Unverified</span>`;
+  return `<article class="firm-card">
+    <div class="firm-card-head">
+      <div class="firm-logo"><span>${esc(getInitials(firm.name))}</span>${logoURL(firm) ? `<img src="${esc(logoURL(firm))}" alt="" loading="lazy" onerror="this.style.display='none'">` : ""}</div>
+      <div class="firm-meta"><div class="cat">${esc(firm.category || "Prop Firm")}</div><h3>${esc(firm.name)} ${badge}</h3></div>
+      <div class="firm-rating">${esc(rating)}</div>
+    </div>
+    <p class="firm-desc">${esc(firm.description || "Trading conditions and account options.")}</p>
+    <div class="firm-rows">
+      <div><div class="k">Accounts</div><div class="v">${esc(firm.account_sizes || "Not specified")}</div></div>
+      <div><div class="k">From</div><div class="v">${esc(firm.price || "Not specified")}</div></div>
+      <div><div class="k">Target</div><div class="v">${esc(firm.profit_target || "Not specified")}</div></div>
+      <div><div class="k">Split</div><div class="v">${esc(firm.profit_split || "Not specified")}</div></div>
+    </div>
+    <div class="firm-actions">
+      <button class="btn primary" data-view-firm="${esc(firm.id)}">View</button>
+      <button class="btn" data-save-firm="${esc(firm.id)}" data-saved="${isSaved ? "1" : "0"}">${isSaved ? "Saved" : "Save"}</button>
+    </div>
+  </article>`;
+}
+
+function favCard(fav, firm){
+  const f = firm || {};
+  const rating = f.rating ? `★ ${f.rating}` : "—";
+  const badge = f.verified ? `<span class="badge badge-verified">Verified</span>` : `<span class="badge badge-unverified">Unverified</span>`;
+  return `<article class="firm-card">
+    <div class="firm-card-head">
+      <div class="firm-logo"><span>${esc(getInitials(f.name))}</span>${logoURL(f) ? `<img src="${esc(logoURL(f))}" alt="" loading="lazy" onerror="this.style.display='none'">` : ""}</div>
+      <div class="firm-meta"><div class="cat">${esc(f.category || "Prop Firm")}</div><h3>${esc(f.name || "Prop firm")} ${badge}</h3></div>
+      <div class="firm-rating">${esc(rating)}</div>
+    </div>
+    <div class="firm-rows">
+      <div><div class="k">Accounts</div><div class="v">${esc(f.account_sizes || "Not specified")}</div></div>
+      <div><div class="k">From</div><div class="v">${esc(f.price || "Not specified")}</div></div>
+    </div>
+    <div class="firm-actions">
+      <button class="btn primary" data-view-firm="${esc(f.id)}">View</button>
+      <button class="btn danger" data-remove-fav="${esc(fav.id)}">Remove</button>
+    </div>
+  </article>`;
+}
+
+async function toggleSave(firmId, btn){
+  if (!user) return;
+  btn.disabled = true;
+  const saved = btn.dataset.saved === "1";
+  try {
+    if (saved) { await db.from("favorites").delete().eq("user_id", user.id).eq("firm_id", firmId); btn.dataset.saved = "0"; btn.textContent = "Save"; toast("Removed"); }
+    else { await db.from("favorites").insert({ user_id: user.id, firm_id: firmId }); btn.dataset.saved = "1"; btn.textContent = "Saved"; toast("Saved"); }
+    const { count } = await db.from("favorites").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+    if (typeof count === "number") { $("favoriteCount").textContent = count; $("navFavCount").textContent = count; }
+  } catch (err) { console.error(err); toast("Could not update"); }
+  finally { btn.disabled = false; }
+}
+async function removeFav(id){ if (!user) return; await db.from("favorites").delete().eq("id", id).eq("user_id", user.id); toast("Removed"); await load(); }
+
+async function loadAllFirms(){
+  const wrap = $("allFirms");
+  wrap.innerHTML = `<div class="empty">Loading firms…</div>`;
+  try {
+    const { data, error } = await db.from("firms").select("*").eq("status","active").order("rating",{ascending:false});
+    if (error) throw error;
+    allFirmsCache = data || [];
+    $("navFirmsCount").textContent = allFirmsCache.length;
+    $("chipAllCount").textContent = allFirmsCache.length;
+    const { data: favRows } = await db.from("favorites").select("firm_id").eq("user_id", user.id);
+    const savedIds = new Set((favRows || []).map(r => String(r.firm_id)));
+    renderFiltered(savedIds);
+  } catch (err) { console.error(err); wrap.innerHTML = `<div class="empty">Could not load firms.</div>`; }
+}
+function renderFiltered(savedIds){
+  let list = allFirmsCache;
+  if (currentChip === "top") list = list.filter(f => Number(f.rating) >= 4.5);
+  else if (currentChip === "verified") list = list.filter(f => f.verified);
+  else if (currentChip !== "all") list = list.filter(f => f.category === currentChip);
+  const wrap = $("allFirms");
+  if (!list.length) { wrap.innerHTML = `<div class="empty">No firms match this filter.</div>`; return; }
+  wrap.innerHTML = list.map(f => firmCard(f, savedIds)).join("");
+}
+document.querySelectorAll("#firmChips .chip").forEach(c => {
+  c.onclick = async () => {
+    document.querySelectorAll("#firmChips .chip").forEach(x => x.classList.remove("active"));
+    c.classList.add("active");
+    currentChip = c.dataset.filter;
+    const { data: favRows } = await db.from("favorites").select("firm_id").eq("user_id", user.id);
+    const savedIds = new Set((favRows || []).map(r => String(r.firm_id)));
+    renderFiltered(savedIds);
+  };
+});
+
+async function loadCompareCache(){
+  if (compareFirmsCache.length) { [1,2,3].forEach(updateSlotUI); return; }
+  const { data } = await db.from("firms").select("*").eq("status","active").order("name",{ascending:true});
+  compareFirmsCache = data || [];
+  [1,2,3].forEach(updateSlotUI);
+}
+function updateSlotUI(n){ const slot = $("cmpSlot" + n), chosen = $("cmpChosen" + n), search = $("cmpSearch" + n); const firm = compareSlots[n]; if (firm) { slot.classList.add("filled"); chosen.textContent = firm.name; search.value = firm.name; } else { slot.classList.remove("filled"); chosen.textContent = "—"; search.value = ""; } }
+function searchList(q, exclude){ q = (q || "").toLowerCase().trim(); return compareFirmsCache.filter(f => { if (exclude.has(String(f.id))) return false; if (!q) return true; return (f.name || "").toLowerCase().includes(q) || (f.category || "").toLowerCase().includes(q); }).slice(0, 15); }
+function showResults(n, items){
+  const box = $("cmpResults" + n);
+  if (!items.length) { box.innerHTML = `<div class="cmp-result empty">No firms found</div>`; box.classList.add("show"); return; }
+  box.innerHTML = items.map(f => `<div class="cmp-result" data-fid="${esc(f.id)}"><span class="r-name">${esc(f.name)}</span><span class="r-cat">${esc(f.category || "Not specified")}</span></div>`).join("");
+  box.querySelectorAll("[data-fid]").forEach(r => { r.onclick = () => { const firm = compareFirmsCache.find(x => String(x.id) === String(r.dataset.fid)); if (!firm) return; compareSlots[n] = firm; updateSlotUI(n); box.classList.remove("show"); }; });
+  box.classList.add("show");
+}
+[1,2,3].forEach(n => {
+  const input = $("cmpSearch" + n), box = $("cmpResults" + n), slot = $("cmpSlot" + n), clearBtn = slot.querySelector("[data-clear]");
+  input.addEventListener("focus", () => { const taken = new Set([1,2,3].filter(x => x !== n).map(x => compareSlots[x]?.id).filter(Boolean).map(String)); showResults(n, searchList(input.value, taken)); });
+  input.addEventListener("input", () => { if (compareSlots[n] && input.value !== compareSlots[n].name) { compareSlots[n] = null; slot.classList.remove("filled"); $("cmpChosen" + n).textContent = "—"; } const taken = new Set([1,2,3].filter(x => x !== n).map(x => compareSlots[x]?.id).filter(Boolean).map(String)); showResults(n, searchList(input.value, taken)); });
+  input.addEventListener("blur", () => setTimeout(() => box.classList.remove("show"), 180));
+  clearBtn.onclick = () => { compareSlots[n] = null; updateSlotUI(n); box.classList.remove("show"); };
+});
+document.addEventListener("click", e => { if (!e.target.closest(".cmp-search-wrap")) [1,2,3].forEach(n => $("cmpResults" + n).classList.remove("show")); });
+
+function parseNums(str){ const m = String(str || "").match(/\d[\d,]*(?:\.\d+)?\s*[kKmM]?/g) || []; return m.map(x => { const c = x.replace(/,/g,"").replace(/\s/g,""); const mult = /m$/i.test(c) ? 1e6 : /k$/i.test(c) ? 1e3 : 1; return parseFloat(c.replace(/[kKmM]$/,"")) * mult; }).filter(Number.isFinite); }
+
+$("cmpRun").onclick = () => {
+  const selected = [1,2,3].map(n => compareSlots[n]).filter(Boolean);
+  const wrap = $("cmpResult");
+  if (!selected.length) { wrap.innerHTML = `<div class="empty" style="margin-top:16px">Pick at least one firm.</div>`; return; }
+  const fields = [["Category",["category"]],["Account sizes",["account_sizes"]],["Starting price",["price"]],["Profit target",["profit_target"]],["Daily drawdown",["daily_drawdown"]],["Max drawdown",["max_drawdown"]],["Profit split",["profit_split"]],["Payout",["payout"]],["Platforms",["platforms"]],["Rating",["rating"]]];
+  const get = (f, keys) => { for (const k of keys) { if (f[k] !== undefined && f[k] !== null && f[k] !== "") return String(f[k]); } return "—"; };
+  const bestRating = Math.max(...selected.map(f => Number(f.rating) || 0));
+  const bestSplit = Math.max(...selected.map(f => { const n = String(f.profit_split || "").match(/\d+/g)?.map(Number) || [0]; return Math.max(...n); }));
+  const priceVals = selected.map(f => { const n = parseNums(f.price); return n.length ? Math.min(...n) : null; });
+  const valid = priceVals.filter(v => v !== null);
+  const bestPrice = valid.length ? Math.min(...valid) : null;
+  const cls = (label, f) => {
+    if (label === "Rating" && Number(f.rating) === bestRating && bestRating > 0) return "better";
+    if (label === "Profit split") { const n = String(f.profit_split || "").match(/\d+/g)?.map(Number) || [0]; if (Math.max(...n) === bestSplit && bestSplit > 0) return "better"; }
+    if (label === "Starting price") { const n = parseNums(f.price); const v = n.length ? Math.min(...n) : null; if (v !== null && v === bestPrice) return "better"; }
+    return "";
+  };
+  wrap.innerHTML = `<div class="cmp-table-wrap"><table class="cmp-table"><thead><tr><th>Feature</th>${selected.map(f => `<th class="head">${esc(f.name)}</th>`).join("")}</tr></thead><tbody>${fields.map(([label, keys]) => `<tr><td>${esc(label)}</td>${selected.map(f => `<td class="${cls(label, f)}">${esc(get(f, keys))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+};
+$("cmpClear").onclick = () => { compareSlots[1] = compareSlots[2] = compareSlots[3] = null; [1,2,3].forEach(n => { updateSlotUI(n); $("cmpResults" + n).classList.remove("show"); }); $("cmpResult").innerHTML = ""; };
+
+const gsInput = $("globalSearch"), gsResults = $("searchResults");
+async function ensureFirmsLoaded(){ if (allFirmsCache.length) return; const { data } = await db.from("firms").select("id,name,category,rating").eq("status","active").order("name"); allFirmsCache = data || []; }
+gsInput.addEventListener("focus", async () => {
+  await ensureFirmsLoaded();
+  const q = gsInput.value.toLowerCase().trim();
+  const items = allFirmsCache.filter(f => !q || (f.name || "").toLowerCase().includes(q) || (f.category || "").toLowerCase().includes(q)).slice(0, 10);
+  if (!items.length) gsResults.innerHTML = `<div class="search-result empty">No firms found</div>`;
+  else {
+    gsResults.innerHTML = items.map(f => `<div class="search-result" data-fid="${esc(f.id)}"><span class="name">${esc(f.name)}</span><span class="cat">${esc(f.category || "Not specified")}</span></div>`).join("");
+    gsResults.querySelectorAll("[data-fid]").forEach(r => r.onclick = () => { openFirmDetail(r.dataset.fid); gsResults.classList.remove("show"); gsInput.value = ""; });
+  }
+  gsResults.classList.add("show");
+});
+gsInput.addEventListener("input", () => gsInput.dispatchEvent(new Event("focus")));
+document.addEventListener("click", e => { if (!e.target.closest(".topbar-search")) gsResults.classList.remove("show"); });
+
+/* ==================== FIRM DETAIL PAGES ==================== */
+async function openFirmDetail(firmId, skipHistory){
+  currentFirmView = { view: "firm", id: firmId };
+  if (!skipHistory) pushUrl({ view: "firm", id: firmId });
+  previousPage = previousPage || "firms";
+  const wrap = $("firmDetailContent");
+  wrap.innerHTML = `<div class="empty">Loading firm profile…</div>`;
+  go("firm");
+
+  try {
+    const { data, error } = await db.from("firms").select("*").eq("id", firmId).limit(1);
+    if (error) throw error;
+    if (!data || !data.length) { wrap.innerHTML = `<div class="empty">Firm not found.</div>`; return; }
+    const f = data[0];
+    currentFirmCache = f;
+
+    const logo = logoURL(f);
+    const initials = getInitials(f.name);
+    const official = f.official_website || "";
+    const affiliate = f.affiliate_link || "";
+    const badge = f.verified ? `<span class="badge badge-verified">Verified</span>` : `<span class="badge badge-unverified">Unverified</span>`;
+    const { data: existingFav } = await db.from("favorites").select("id").eq("user_id", user.id).eq("firm_id", f.id).maybeSingle();
+    const isSaved = !!existingFav;
+    const { count: reviewCount } = await db.from("firm_reviews").select("id", { count: "exact", head: true }).eq("firm_id", f.id).eq("status", "approved");
+
+    const rules = [
+      ["Account sizes", f.account_sizes],["Starting price", f.price],["Profit target", f.profit_target],
+      ["Daily drawdown", f.daily_drawdown],["Maximum drawdown", f.max_drawdown],["Profit split", f.profit_split],
+      ["Payout", f.payout],["Platforms", f.platforms],["Rating", f.rating ? "★ " + f.rating + " / 5" : null],
+      ["Tag", f.tag],["Best for", f.best_for]
+    ].filter(([, v]) => v);
+    const rulesHTML = rules.map(([k, v]) => `<div class="detail-cell"><div class="ck">${esc(k)}</div><div class="cv">${esc(v)}</div></div>`).join("");
+
+    wrap.innerHTML = `
+      <button class="detail-back" id="detailBack">← Back</button>
+      <div class="detail-header">
+        <div class="detail-logo"><span>${esc(initials)}</span>${logo ? `<img src="${esc(logo)}" alt="" onerror="this.style.display='none'">` : ""}</div>
+        <div class="detail-header-meta">
+          <div class="detail-cat">${esc(f.category || "Prop Firm")}</div>
+          <h1>${esc(f.name)} ${badge}</h1>
+          <p class="lead">${esc(f.description || "Trading conditions and account options.")}</p>
+          <div class="detail-actions">
+            <button class="btn" id="detailSaveBtn">${isSaved ? "Saved" : "Save firm"}</button>
+            ${official ? `<a class="btn primary" href="${esc(official)}" target="_blank" rel="noopener noreferrer">Visit website ↗</a>` : ""}
+            ${affiliate ? `<a class="btn" href="${esc(affiliate)}" target="_blank" rel="noopener noreferrer">View offer</a>` : ""}
+          </div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="k">Trading rules & conditions</div>
+        <div class="detail-grid">${rulesHTML}</div>
+        <p class="detail-note">Rules and pricing change — verify on the firm's official website before purchasing.</p>
+      </div>
+      ${f.pros ? `<div class="detail-section"><div class="k">Pros</div><div style="font-size:14px;color:var(--text);line-height:1.75;white-space:pre-wrap">${esc(f.pros)}</div></div>` : ""}
+      ${f.cons ? `<div class="detail-section"><div class="k">Cons</div><div style="font-size:14px;color:var(--text);line-height:1.75;white-space:pre-wrap">${esc(f.cons)}</div></div>` : ""}
+      <div class="detail-section">
+        <div class="k">Reviews</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="viewReviewsBtn">View reviews${reviewCount ? " (" + reviewCount + ")" : ""}</button>
+          <button class="btn primary" id="writeReviewBtn">Write a review</button>
+        </div>
+      </div>
+    `;
+
+    $("detailBack").onclick = () => history.back();
+
+    const saveBtn = $("detailSaveBtn");
+    if (saveBtn) {
+      saveBtn.onclick = async () => {
+        saveBtn.disabled = true;
+        const nowSaved = saveBtn.textContent === "Saved";
+        try {
+          if (nowSaved) { await db.from("favorites").delete().eq("user_id", user.id).eq("firm_id", f.id); saveBtn.textContent = "Save firm"; toast("Removed"); }
+          else { await db.from("favorites").insert({ user_id: user.id, firm_id: f.id }); saveBtn.textContent = "Saved"; toast("Saved"); }
+          const { count } = await db.from("favorites").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+          if (typeof count === "number") { $("favoriteCount").textContent = count; $("navFavCount").textContent = count; }
+        } catch (err) { toast("Could not update"); }
+        finally { saveBtn.disabled = false; }
+      };
+    }
+    $("viewReviewsBtn").onclick = () => showFirmReviews(firmId);
+    $("writeReviewBtn").onclick = () => showWriteReview(firmId);
+  } catch (err) {
+    console.error(err);
+    wrap.innerHTML = `<div class="empty">Could not load firm profile.</div>`;
+  }
+}
+
+async function showFirmReviews(firmId, skipHistory){
+  currentFirmView = { view: "reviews", id: firmId };
+  if (!skipHistory) pushUrl({ view: "reviews", id: firmId });
+  const wrap = $("firmDetailContent");
+  wrap.innerHTML = `<div class="empty">Loading reviews…</div>`;
+  go("firm");
+
+  try {
+    const f = currentFirmCache && currentFirmCache.id === firmId
+      ? currentFirmCache
+      : (await db.from("firms").select("*").eq("id", firmId).limit(1)).data[0];
+    currentFirmCache = f;
+
+    const logo = logoURL(f);
+    const initials = getInitials(f.name);
+
+    const { data: reviews, error } = await db.from("firm_reviews")
+      .select("reviewer_name,rating,review_text,created_at,country")
+      .eq("firm_id", firmId)
+      .eq("status", "approved")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+
+    wrap.innerHTML = renderReviewsPage(f, reviews || [], initials, logo);
+    wireReviewsPage(firmId, f, reviews || []);
+  } catch (err) {
+    console.error(err);
+    wrap.innerHTML = `<div class="empty">Could not load reviews.</div>`;
+  }
+}
+
+function renderReviewsPage(f, reviews, initials, logo){
+  if (!reviews.length) {
+    return `
+      <button class="detail-back" id="reviewsBack">← Back to ${esc(f.name)}</button>
+      <div class="detail-header">
+        <div class="detail-logo"><span>${esc(initials)}</span>${logo ? `<img src="${esc(logo)}" alt="" onerror="this.style.display='none'">` : ""}</div>
+        <div class="detail-header-meta">
+          <div class="detail-cat">Reviews</div>
+          <h1>${esc(f.name)}</h1>
+          <p class="lead">Read what other traders say about this firm.</p>
+        </div>
+      </div>
+      <div class="empty" style="padding:60px 20px">
+        <div style="font-size:32px;margin-bottom:12px;opacity:.5">☆</div>
+        <strong style="display:block;color:var(--text);margin-bottom:6px;font-size:15px">No reviews yet</strong>
+        Be the first to share your experience with this firm.
+        <div style="margin-top:20px">
+          <button class="btn primary" id="reviewsWriteBtn">Write the first review</button>
+        </div>
+      </div>
+    `;
+  }
+
+  const total = reviews.length;
+  const avg = reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / total;
+  const counts = [0,0,0,0,0];
+  reviews.forEach(r => { const n = Math.max(1, Math.min(5, Number(r.rating) || 0)); counts[n-1]++; });
+  const fullStars = "★".repeat(Math.round(avg)) + "☆".repeat(5 - Math.round(avg));
+
+  const countryCounts = {};
+  reviews.forEach(r => { const c = r.country; if (c) countryCounts[c] = (countryCounts[c] || 0) + 1; });
+  const topCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+  const countryChips = topCountries.map(([code, count]) => {
+    const name = COUNTRY_NAMES[code] || code;
+    const flag = countryFlag(code);
+    return `<button class="tp-country-chip" data-country="${code}">${flag} ${name} <span>${count}</span></button>`;
+  }).join("");
+
+  return `
+    <button class="detail-back" id="reviewsBack">← Back to ${esc(f.name)}</button>
+    <div class="detail-header">
+      <div class="detail-logo"><span>${esc(initials)}</span>${logo ? `<img src="${esc(logo)}" alt="" onerror="this.style.display='none'">` : ""}</div>
+      <div class="detail-header-meta">
+        <div class="detail-cat">Reviews</div>
+        <h1>${esc(f.name)}</h1>
+        <p class="lead">Read what other traders say about this firm.</p>
+        <div class="detail-actions">
+          <button class="btn primary" id="reviewsWriteBtn">Write a review</button>
+        </div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="tp-summary">
+        <div class="tp-summary-left">
+          <div class="tp-avg">${avg.toFixed(1)}</div>
+          <div class="tp-stars">${fullStars}</div>
+          <div class="tp-count">${total} review${total === 1 ? "" : "s"}</div>
+        </div>
+        <div class="tp-summary-right">
+          ${[5,4,3,2,1].map(star => {
+            const c = counts[star-1];
+            const pct = Math.round((c/total) * 100);
+            return `<button class="tp-bar-row" data-rating="${star}">
+              <span class="tp-bar-lbl">${star} ★</span>
+              <div class="tp-bar-track"><span style="width:${pct}%"></span></div>
+              <span class="tp-bar-count">${c}</span>
+            </button>`;
+          }).join("")}
+        </div>
+      </div>
+      ${topCountries.length ? `
+        <div class="tp-countries">
+          <div class="tp-countries-label">Filter by country</div>
+          <div class="tp-country-chips" id="tpCountryChips">
+            <button class="tp-country-chip active" data-country="all">All countries</button>
+            ${countryChips}
+          </div>
+        </div>
+      ` : ""}
+      <div class="tp-toolbar">
+        <div class="tp-toolbar-left" id="tpResultCount">Showing ${total} review${total === 1 ? "" : "s"}</div>
+        <div class="tp-toolbar-right">
+          <label for="tpSort" class="tp-sort-label">Sort:</label>
+          <select id="tpSort" class="tp-sort-select">
+            <option value="newest">Newest</option>
+            <option value="highest">Highest rated</option>
+            <option value="lowest">Lowest rated</option>
+          </select>
+        </div>
+      </div>
+      <div id="tpReviewList" class="tp-review-list">
+        ${reviews.map(r => renderReviewCard(r)).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderReviewCard(r){
+  const date = r.created_at ? new Date(r.created_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+  const rating = Math.max(1, Math.min(5, Number(r.rating) || 0));
+  const name = r.reviewer_name || "Anonymous";
+  const initialsR = name.trim().split(/\s+/).map(x => x[0]).slice(0,2).join("").toUpperCase();
+  const countryName = r.country ? (COUNTRY_NAMES[r.country] || r.country) : "";
+  const flag = r.country ? countryFlag(r.country) : "";
+  return `<div class="tp-review-card">
+    <div class="tp-review-head">
+      <div class="tp-review-author">
+        <div class="tp-review-avatar">${esc(initialsR)}</div>
+        <div>
+          <div class="tp-review-name">${esc(name)}</div>
+          <div class="tp-review-date">${esc(date)}</div>
+        </div>
+      </div>
+      <div class="tp-review-corner">
+        ${r.country ? `<span class="tp-review-country-badge">${flag} ${esc(countryName)}</span>` : ""}
+        <div class="tp-review-stars">${"★".repeat(rating)}${"☆".repeat(5-rating)}</div>
+      </div>
+    </div>
+    <p class="tp-review-text">${esc(r.review_text || "").replace(/\n/g, "<br>")}</p>
+  </div>`;
+}
+
+function wireReviewsPage(firmId, f, allReviews){
+  $("reviewsBack").onclick = () => history.back();
+  const writeBtn = $("reviewsWriteBtn");
+  if (writeBtn) writeBtn.onclick = () => showWriteReview(firmId);
+
+  let filter = { country: "all", rating: null, sort: "newest" };
+
+  function apply(){
+    let list = allReviews.slice();
+    if (filter.country !== "all") list = list.filter(r => r.country === filter.country);
+    if (filter.rating) list = list.filter(r => Math.round(Number(r.rating) || 0) === filter.rating);
+    if (filter.sort === "newest") list.sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+    else if (filter.sort === "highest") list.sort((a,b) => Number(b.rating||0) - Number(a.rating||0));
+    else if (filter.sort === "lowest") list.sort((a,b) => Number(a.rating||0) - Number(b.rating||0));
+
+    const listEl = $("tpReviewList");
+    const countEl = $("tpResultCount");
+    if (!list.length) {
+      listEl.innerHTML = `<div class="empty">No reviews match this filter.</div>`;
+      countEl.textContent = "No reviews match";
+    } else {
+      listEl.innerHTML = list.map(r => renderReviewCard(r)).join("");
+      countEl.textContent = `Showing ${list.length} of ${allReviews.length} review${allReviews.length === 1 ? "" : "s"}`;
+    }
+  }
+
+  document.querySelectorAll("#tpCountryChips .tp-country-chip").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll("#tpCountryChips .tp-country-chip").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      filter.country = btn.dataset.country;
+      filter.rating = null;
+      document.querySelectorAll(".tp-bar-row").forEach(b => b.classList.remove("active"));
+      apply();
+    };
+  });
+
+  document.querySelectorAll(".tp-bar-row").forEach(btn => {
+    btn.onclick = () => {
+      const r = Number(btn.dataset.rating);
+      const wasActive = btn.classList.contains("active");
+      document.querySelectorAll(".tp-bar-row").forEach(b => b.classList.remove("active"));
+      if (wasActive) { filter.rating = null; }
+      else {
+        btn.classList.add("active");
+        filter.rating = r;
+        filter.country = "all";
+        document.querySelectorAll("#tpCountryChips .tp-country-chip").forEach(b => b.classList.remove("active"));
+        const allChip = document.querySelector('#tpCountryChips .tp-country-chip[data-country="all"]');
+        if (allChip) allChip.classList.add("active");
+      }
+      apply();
+    };
+  });
+
+  const sortSel = $("tpSort");
+  if (sortSel) sortSel.onchange = () => { filter.sort = sortSel.value; apply(); };
+}
+
+async function showWriteReview(firmId, skipHistory){
+  currentFirmView = { view: "write", id: firmId };
+  if (!skipHistory) pushUrl({ view: "write", id: firmId });
+  const wrap = $("firmDetailContent");
+  wrap.innerHTML = `<div class="empty">Loading…</div>`;
+  go("firm");
+
+  try {
+    const f = currentFirmCache && currentFirmCache.id === firmId
+      ? currentFirmCache
+      : (await db.from("firms").select("*").eq("id", firmId).limit(1)).data[0];
+    currentFirmCache = f;
+
+    const logo = logoURL(f);
+    const initials = getInitials(f.name);
+    const defaultName = user.user_metadata?.full_name || user.email?.split("@")[0] || "";
+
+    wrap.innerHTML = `
+      <button class="detail-back" id="writeBack">← Back to ${esc(f.name)}</button>
+      <div class="detail-header">
+        <div class="detail-logo"><span>${esc(initials)}</span>${logo ? `<img src="${esc(logo)}" alt="" onerror="this.style.display='none'">` : ""}</div>
+        <div class="detail-header-meta">
+          <div class="detail-cat">Write a review</div>
+          <h1>${esc(f.name)}</h1>
+          <p class="lead">Your honest feedback helps other traders choose the right firm.</p>
+        </div>
+      </div>
+      <div class="detail-section">
+        <form id="writeReviewForm">
+          <div class="field" style="margin-bottom:16px">
+            <label>Your name</label>
+            <input id="wReviewName" type="text" maxlength="40" minlength="2" required value="${esc(defaultName)}" placeholder="Display name">
+          </div>
+          <div class="field" style="margin-bottom:16px">
+            <label>Your rating</label>
+            <div class="star-picker" id="wStarPicker">
+              <button type="button" data-star="1">★</button>
+              <button type="button" data-star="2">★</button>
+              <button type="button" data-star="3">★</button>
+              <button type="button" data-star="4">★</button>
+              <button type="button" data-star="5">★</button>
+            </div>
+            <span class="star-label" id="wStarLabel">Tap a star to rate</span>
+          </div>
+          <div class="field" style="margin-bottom:16px">
+            <label>Your review</label>
+            <textarea id="wReviewText" minlength="10" maxlength="1000" required placeholder="What was your experience with this firm?"></textarea>
+          </div>
+          <div class="review-form-actions">
+            <button class="btn primary" id="wReviewSubmit" type="submit">Publish review</button>
+          </div>
+          <div class="review-message" id="wReviewMsg"></div>
+        </form>
+      </div>
+    `;
+
+    $("writeBack").onclick = () => history.back();
+
+    let stars = 0;
+    const starBtns = wrap.querySelectorAll("#wStarPicker button");
+    const starLabel = $("wStarLabel");
+    const ratingLabels = ["", "Poor", "Fair", "Good", "Great", "Excellent"];
+    function setStars(n){ stars = n; starBtns.forEach(b => b.classList.toggle("on", Number(b.dataset.star) <= n)); starLabel.textContent = n ? `${n} / 5 · ${ratingLabels[n]}` : "Tap a star to rate"; }
+    starBtns.forEach(b => b.onclick = () => setStars(Number(b.dataset.star)));
+
+    $("writeReviewForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const msg = $("wReviewMsg");
+      msg.className = "review-message";
+      const name = $("wReviewName").value.trim();
+      const text = $("wReviewText").value.trim();
+      if (name.length < 2) { msg.textContent = "Please enter your name."; msg.classList.add("show", "error"); return; }
+      if (stars < 1) { msg.textContent = "Please select a rating."; msg.classList.add("show", "error"); return; }
+      if (text.length < 10) { msg.textContent = "Review must be at least 10 characters."; msg.classList.add("show", "error"); return; }
+
+      const btn = $("wReviewSubmit");
+      btn.disabled = true;
+      btn.textContent = "Submitting…";
+      const countryCode = user.user_metadata?.country || null;
+
+      const { error: err } = await db.from("firm_reviews").insert({
+        firm_id: f.id, user_id: user.id,
+        reviewer_name: name, rating: stars,
+        review_text: text, status: "pending",
+        country: countryCode
+      });
+
+      if (err) {
+        msg.textContent = "Error: " + err.message;
+        msg.classList.add("show", "error");
+        btn.disabled = false;
+        btn.textContent = "Publish review";
+        return;
+      }
+      msg.textContent = "Thank you! Your review is awaiting approval.";
+      msg.classList.add("show", "success");
+      btn.textContent = "Submitted";
+      $("wReviewText").value = "";
+      setStars(0);
+      setTimeout(() => showFirmReviews(firmId), 1800);
+    };
+  } catch (err) {
+    console.error(err);
+    wrap.innerHTML = `<div class="empty">Could not load form.</div>`;
+  }
+}
+
+document.addEventListener("click", e => {
+  const viewBtn = e.target.closest("[data-view-firm]");
+  if (viewBtn) openFirmDetail(viewBtn.dataset.viewFirm);
+  const removeBtn = e.target.closest("[data-remove-fav]");
+  if (removeBtn) removeFav(removeBtn.dataset.removeFav);
+  const saveBtn = e.target.closest("[data-save-firm]");
+  if (saveBtn) toggleSave(saveBtn.dataset.saveFirm, saveBtn);
+});
+
+/* JOURNAL */
+const val = id => $(id).value === "" ? null : $(id).value;
+function resetForm(){ $("tradeForm").reset(); $("tradeId").value = ""; $("tradeDate").value = new Date().toISOString().slice(0,10); $("formTitle").textContent = "Add a trade"; $("saveTrade").textContent = "Save trade"; $("cancelEdit").hidden = true; }
+$("cancelEdit").onclick = resetForm;
+$("tradeDate").value = new Date().toISOString().slice(0,10);
+$("tradeForm").onsubmit = async e => {
+  e.preventDefault(); if (!user) return;
+  const id = $("tradeId").value;
+  const row = { user_id: user.id, trade_date: $("tradeDate").value, symbol: $("symbol").value.trim().toUpperCase(), direction: $("direction").value, result: $("result").value, entry_price: val("entry"), exit_price: val("exit"), stop_loss: val("sl"), take_profit: val("tp"), risk_amount: val("risk"), pnl: val("pnl"), strategy: $("strategy").value.trim() || null, emotion: $("emotion").value || null, notes: $("notes").value.trim() || null };
+  $("saveTrade").disabled = true;
+  const res = id ? await db.from("trading_journal").update(row).eq("id", id).eq("user_id", user.id) : await db.from("trading_journal").insert(row);
+  $("saveTrade").disabled = false;
+  if (res.error) { toast("Error: " + res.error.message); return; }
+  toast(id ? "Updated" : "Saved"); resetForm(); await loadTrades();
+};
+
+async function loadTrades(){
+  if (!user) return;
+  const { data, error } = await db.from("trading_journal").select("*").eq("user_id", user.id).order("trade_date",{ascending:false}).order("created_at",{ascending:false});
+  if (error) { trades = []; $("tradeCount").textContent = "0"; emptyEl("tradeList", "Journal not connected yet."); emptyEl("recentTrades", "Set up the journal table to start recording trades."); updateStats(); return; }
+  trades = data || [];
+  $("tradeCount").textContent = trades.length;
+  updateStats();
+  if (!trades.length) { emptyEl("tradeList", "No trades yet. Add your first trade above."); emptyEl("recentTrades", "Your latest trades will appear here."); return; }
+  const renderTrade = t => { const p = Number(t.pnl) || 0; const cls = p > 0 ? "pos" : p < 0 ? "neg" : ""; const statusCls = t.result === "Win" ? "approved" : t.result === "Loss" ? "rejected" : "pending"; return `<div class="item"><div class="info"><div class="title">${esc(t.symbol)} · ${esc(t.direction)} <span class="status ${statusCls}">${esc(t.result)}</span></div><div class="sub">${esc(t.trade_date)} · ${esc(t.strategy || "No strategy")} · ${esc(t.emotion || "No mindset")}</div><div class="sub">${esc(t.notes || "No notes")}</div></div><div style="text-align:right;flex-shrink:0"><b class="${cls}">${p < 0 ? "−" : "+"}$${Math.abs(p).toFixed(2)}</b><div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end"><button class="btn small" data-edit="${esc(t.id)}">Edit</button><button class="btn small danger" data-del="${esc(t.id)}">Delete</button></div></div></div>`; };
+  $("tradeList").innerHTML = trades.map(renderTrade).join("");
+  $("recentTrades").innerHTML = trades.slice(0,3).map(t => `<div class="item"><div class="info"><div class="title">${esc(t.symbol)} · ${esc(t.result)}</div><div class="sub">${esc(t.trade_date)} · ${esc(t.strategy || "No strategy")}</div></div><b class="${Number(t.pnl)>0?"pos":Number(t.pnl)<0?"neg":""}">$${Number(t.pnl||0).toFixed(2)}</b></div>`).join("");
+  document.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => editTrade(b.dataset.edit));
+  document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => deleteTrade(b.dataset.del));
+}
+function editTrade(id){ const t = trades.find(x => x.id === id); if (!t) return; const map = {tradeDate:"trade_date",symbol:"symbol",direction:"direction",result:"result",entry:"entry_price",exit:"exit_price",sl:"stop_loss",tp:"take_profit",risk:"risk_amount",pnl:"pnl",strategy:"strategy",emotion:"emotion",notes:"notes"}; for (const [el, k] of Object.entries(map)) $(el).value = t[k] ?? ""; $("tradeId").value = t.id; $("formTitle").textContent = "Edit trade"; $("saveTrade").textContent = "Update trade"; $("cancelEdit").hidden = false; go("journal"); $("tradeForm").scrollIntoView({ behavior: "smooth" }); }
+async function deleteTrade(id){ if (!confirm("Delete this journal entry?")) return; await db.from("trading_journal").delete().eq("id", id).eq("user_id", user.id); toast("Deleted"); await loadTrades(); }
+function updateStats(){ const n = trades.length, w = trades.filter(t => t.result === "Win").length, l = trades.filter(t => t.result === "Loss").length, b = trades.filter(t => t.result === "Breakeven").length; const net = trades.reduce((s, t) => s + (Number(t.pnl) || 0), 0); const dec = w + l, avg = n ? net / n : 0; $("winRate").textContent = (dec ? (w / dec * 100).toFixed(1) : 0) + "%"; $("netPnl").textContent = (net < 0 ? "−" : "+") + "$" + Math.abs(net).toFixed(2); $("netPnl").className = "v " + (net > 0 ? "pos" : net < 0 ? "neg" : ""); $("avgPnl").textContent = (avg < 0 ? "−" : "+") + "$" + Math.abs(avg).toFixed(2); $("wins").textContent = w; $("losses").textContent = l; $("breakevens").textContent = b; $("totalTrades").textContent = n; }
+
+async function getUser(){
+  try { const { data, error } = await db.auth.getUser(); if (!error && data?.user?.email_confirmed_at) return data.user; } catch(e) {}
+  try { const { data } = await db.auth.getSession(); if (data?.session?.user?.email_confirmed_at) return data.session.user; } catch(e) {}
+  return null;
+}
+
+async function load(){
+  const u = await getUser();
+  if (!u) { location.replace("auth.html?next=" + encodeURIComponent("dashboard.html")); return; }
+  user = u;
+  const name = u.user_metadata?.full_name || u.email?.split("@")[0] || "Trader";
+  $("memberName").textContent = name; $("userName").textContent = name;
+  $("userInitial").textContent = (name.trim().charAt(0) || "U").toUpperCase();
+  $("settingEmail").textContent = u.email || "—";
+  $("settingName").textContent = name;
+  const cc = u.user_metadata?.country;
+  $("settingCountry").textContent = cc ? (COUNTRY_NAMES[cc] || cc) + " (" + cc + ")" : "Not set";
+
+  const [fr, cr, rr] = await Promise.all([
+    db.from("favorites").select("id,firm_id,created_at").eq("user_id", u.id).order("created_at", { ascending: false }),
+    db.from("saved_comparisons").select("id").eq("user_id", u.id),
+    db.from("firm_reviews").select("id,firm_id,rating,review_text,status,created_at").eq("user_id", u.id).order("created_at", { ascending: false })
+  ]);
+  const fav = fr.data || [], comps = cr.data || [], reviews = rr.data || [];
+  $("favoriteCount").textContent = fav.length; $("navFavCount").textContent = fav.length;
+  $("comparisonCount").textContent = comps.length; $("reviewCount").textContent = reviews.length;
+
+  const ids = [...new Set([...fav.map(x => x.firm_id), ...reviews.map(x => x.firm_id)].filter(Boolean))];
+  let firms = {};
+  if (ids.length) { const { data } = await db.from("firms").select("*").in("id", ids); for (const f of data || []) firms[f.id] = f; }
+
+  function renderFavs(targetId, items){ const el = $(targetId); if (!items.length) { el.innerHTML = `<div class="empty">No favorites yet. Browse firms and save the ones you want to review later.</div>`; return; } el.innerHTML = items.map(f => favCard(f, firms[f.firm_id])).join(""); }
+  renderFavs("favoritesList", fav);
+  renderFavs("homeFavorites", fav.slice(0,3));
+
+  if (!reviews.length) emptyEl("reviewsList", "You haven't submitted a review yet.");
+  else $("reviewsList").innerHTML = reviews.map(r => { const s = String(r.status || "pending").toLowerCase(); return `<div class="item"><div class="info"><div class="title">${esc(firms[r.firm_id]?.name || "Prop firm")}</div><div class="sub">${esc((r.review_text || "").slice(0, 100))}${(r.review_text || "").length > 100 ? "…" : ""}</div></div><span class="status ${s}">${esc(s)}</span></div>`; }).join("");
+
+  await loadTrades();
+
+  // Restore view from URL
+  const params = new URLSearchParams(location.search);
+  const view = params.get("view");
+  const page = params.get("page");
+  const id = params.get("id");
+  if (view === "firm" && id) openFirmDetail(id, true);
+  else if (view === "reviews" && id) showFirmReviews(id, true);
+  else if (view === "write" && id) showWriteReview(id, true);
+  else if (page && page !== "home") go(page);
+}
+
+/* Back button handling */
+window.addEventListener("popstate", () => {
+  const params = new URLSearchParams(location.search);
+  const view = params.get("view");
+  const page = params.get("page");
+  const id = params.get("id");
+
+  if (view === "firm" && id) openFirmDetail(id, true);
+  else if (view === "reviews" && id) showFirmReviews(id, true);
+  else if (view === "write" && id) showWriteReview(id, true);
+  else if (page && page !== "home") go(page);
+  else go("home");
+});
+
+await db.auth.getSession();
+const bootUser = await getUser();
+if (!bootUser) location.replace("auth.html?next=" + encodeURIComponent("dashboard.html" + location.search));
+else { await load(); const bp = new URLSearchParams(location.search).get("page"); if (bp && bp !== "home" && document.getElementById("page-" + bp) && !new URLSearchParams(location.search).get("view")) go(bp); }
+db.auth.onAuthStateChange((event, s) => { if (event === "SIGNED_OUT" || !s) location.replace("index.html"); });
+</script>
+<script src="/src/components/dashboard/tools.js"></script>
+<script type="module">
+import { db } from "/src/services/supabase.js";
+try { const { data } = await db.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (data && data.nextLevel === "aal2" && data.currentLevel !== "aal2") location.replace("mfa.html?next=" + encodeURIComponent(location.pathname)); } catch (e) {}
+</script>
+</body>
+</html>

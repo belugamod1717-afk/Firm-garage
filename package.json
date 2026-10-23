@@ -1,0 +1,11 @@
+{
+  "name": "firm-garage",
+  "version": "5.0.0",
+  "private": true,
+  "description": "Firm Garage — prop trading firm comparison platform (static HTML + Supabase)",
+  "scripts": {
+    "dev": "npx --yes serve . -l 8080",
+    "check": "node scripts/check.mjs",
+    "build": "node scripts/check.mjs"
+  }
+}

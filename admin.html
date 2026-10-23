@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0e11">
+<title>Admin — Firm Garage</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo.png">
+<link rel="apple-touch-icon" href="/assets/images/logo.png">
+<link rel="preconnect" href="https://esm.sh">
+<link rel="preconnect" href="https://mvltzznwdglwaedfzxze.supabase.co">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="dark"]{--bg:#0b0e11;--surface:#131820;--surface-2:#161c26;--surface-3:#1a2029;--line:#242b35;--line-2:#2f3846;--text:#e6ebf0;--text-dim:#a3aebd;--text-mute:#6b7787;--accent:#4a9eff;--accent-dim:#2f5f8f;--accent-bg:rgba(74,158,255,.08);--success:#4ade80;--gold:#e4b949;--danger:#ff6b6b;--shadow:0 8px 24px rgba(0,0,0,.4);}
+:root[data-theme="light"]{--bg:#f7f8fa;--surface:#ffffff;--surface-2:#f2f4f7;--surface-3:#e9ecf0;--line:#e1e5eb;--line-2:#d1d7de;--text:#1a1f26;--text-dim:#525c69;--text-mute:#8a94a0;--accent:#1e75e8;--accent-dim:#1857b3;--accent-bg:rgba(30,117,232,.08);--success:#16a34a;--gold:#c99b1e;--danger:#dc2626;--shadow:0 4px 12px rgba(0,0,0,.06);}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.topbar{height:56px;border-bottom:1px solid var(--line);background:var(--surface);display:flex;align-items:center;padding:0 20px;gap:16px;position:sticky;top:0;z-index:40;}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.3px;color:var(--text);flex-shrink:0;}
+.logo-mark{width:26px;height:26px;border-radius:6px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
+.logo span{color:var(--accent)}
+.admin-pill{font-size:10px;font-weight:700;letter-spacing:1.2px;padding:4px 9px;border-radius:999px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-dim);text-transform:uppercase;}
+.topbar-spacer{flex:1}
+.topbar-email{color:var(--text-mute);font-size:12.5px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.topbar-btn{width:34px;height:34px;border:1px solid var(--line-2);border-radius:7px;background:transparent;color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s;}
+.topbar-btn:hover{border-color:var(--accent-dim);color:var(--text)}
+.topbar-logout{padding:7px 12px;border:1px solid var(--line-2);border-radius:7px;background:transparent;color:var(--danger);font-size:12.5px;font-weight:500;transition:.15s;}
+.topbar-logout:hover{background:rgba(255,107,107,.1);border-color:var(--danger)}
+.admin-wrap{max-width:1300px;margin:0 auto;padding:24px 20px 60px;}
+.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:22px;}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-mute);margin-bottom:8px;}
+h1{font-size:26px;font-weight:700;letter-spacing:-.6px;margin-bottom:6px;}
+.page-head p{color:var(--text-dim);font-size:14px}
+.page-head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:22px;}
+.stat-card{padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;}
+.stat-card .k{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--text-mute);margin-bottom:8px;}
+.stat-card .v{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--text);}
+.tabs{display:flex;gap:4px;padding:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;margin-bottom:20px;overflow-x:auto;}
+.tab{padding:9px 16px;border:0;background:transparent;color:var(--text-dim);font-size:13.5px;font-weight:500;border-radius:6px;transition:.15s;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--surface);color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.tab .badge{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-mute);}
+.tab.active .badge{background:var(--accent);color:#fff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px;}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.panel-head h2{font-size:16px;font-weight:600;letter-spacing:-.2px;}
+.panel-head p{font-size:13px;color:var(--text-mute);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:6px;border:1px solid var(--line-2);background:transparent;color:var(--text);font-size:13px;font-weight:500;transition:.15s;text-decoration:none;white-space:nowrap;}
+.btn:hover{border-color:var(--accent-dim);background:var(--accent-bg);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn.primary:hover{background:var(--accent-dim);border-color:var(--accent-dim);color:#fff}
+.btn.danger{color:var(--danger)}
+.btn.danger:hover{background:rgba(255,107,107,.1);border-color:var(--danger);color:var(--danger)}
+.btn.success{color:var(--success)}
+.btn.success:hover{background:rgba(74,222,128,.1);border-color:var(--success);color:var(--success)}
+.btn.small{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+.search-wrap{flex:1;min-width:200px;position:relative;}
+.search-wrap input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--line-2);border-radius:7px;background:var(--bg);color:var(--text);font-size:13.5px;outline:none;transition:.15s;}
+.search-wrap input:focus{border-color:var(--accent);background:var(--surface-2)}
+.search-wrap .icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-mute);font-size:13px;pointer-events:none;}
+.filter-select{padding:9px 12px;border:1px solid var(--line-2);border-radius:7px;background:var(--bg);color:var(--text);font-size:13px;font-weight:500;outline:none;transition:.15s;}
+.filter-select:focus{border-color:var(--accent)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);}
+table{width:100%;border-collapse:collapse;min-width:640px;}
+thead th{padding:11px 14px;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-mute);background:var(--surface-2);border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--line);transition:.12s;}
+tbody tr:last-child{border-bottom:0}
+tbody tr:hover{background:var(--surface-2)}
+tbody td{padding:12px 14px;font-size:13px;vertical-align:middle;}
+td.firm-name{font-weight:600;color:var(--text);min-width:160px;}
+td.firm-name .sub{display:block;font-size:11.5px;color:var(--text-mute);font-weight:500;margin-top:2px;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:5px;font-size:10.5px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;}
+.badge.blue{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-dim)}
+.badge.green{background:rgba(74,222,128,.1);color:var(--success);border:1px solid rgba(74,222,128,.25)}
+.badge.grey{background:transparent;color:var(--text-mute);border:1px solid var(--line-2)}
+.badge.gold{background:rgba(228,185,73,.1);color:var(--gold);border:1px solid rgba(228,185,73,.25)}
+.badge.amber{background:rgba(228,185,73,.1);color:var(--gold);border:1px solid rgba(228,185,73,.25)}
+.badge.red{background:rgba(255,107,107,.1);color:var(--danger);border:1px solid rgba(255,107,107,.25)}
+.row-actions{display:flex;gap:6px;justify-content:flex-end;}
+.table-empty{padding:40px;text-align:center;color:var(--text-mute);font-size:13.5px;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}
+.field{display:grid;gap:6px;min-width:0;}
+.field.full{grid-column:1/-1;}
+.field label{font-size:12px;font-weight:600;color:var(--text-dim);}
+.field label .req{color:var(--accent)}
+.field input,.field select,.field textarea{padding:9px 12px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg);color:var(--text);font-size:13.5px;outline:none;transition:.15s;font-family:inherit;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:var(--surface-2)}
+.field input[readonly]{opacity:.7;cursor:not-allowed;}
+.field textarea{min-height:80px;resize:vertical;line-height:1.55;}
+.field .hint{font-size:11.5px;color:var(--text-mute);line-height:1.5;}
+.form-section{margin:22px 0 12px;padding-top:18px;border-top:1px solid var(--line);}
+.form-section h3{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-mute);}
+.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+.check-row{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:6px;cursor:pointer;margin:14px 0;}
+.check-row input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;}
+.check-row label{font-size:13px;color:var(--text);cursor:pointer;}
+.msg{display:none;padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;}
+.msg.show{display:block}
+.msg.success{background:rgba(74,222,128,.1);color:var(--success);border:1px solid rgba(74,222,128,.25)}
+.msg.error{background:rgba(255,107,107,.1);color:var(--danger);border:1px solid rgba(255,107,107,.25)}
+.msg.info{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-dim)}
+.login-shell{max-width:400px;margin:8vh auto 0;}
+.login-brand{text-align:center;margin-bottom:24px;font-size:26px;font-weight:700;letter-spacing:-.6px;}
+.login-brand span{color:var(--accent)}
+.login-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:var(--shadow);}
+.login-card h1{font-size:22px;margin-bottom:6px;}
+.login-card .sub{color:var(--text-dim);font-size:13.5px;margin-bottom:20px;}
+.login-card .field{margin-bottom:14px;}
+.login-card .btn.primary{width:100%;padding:11px;font-size:14px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.modal-overlay[hidden]{display:none}
+.modal{max-width:720px;width:100%;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);margin:auto 0;}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:22px 24px;border-bottom:1px solid var(--line);}
+.modal-head h2{font-size:18px;font-weight:600;letter-spacing:-.3px;}
+.modal-head .kicker{margin-bottom:4px}
+.modal-body{padding:22px 24px;}
+.modal-close{width:32px;height:32px;border:1px solid var(--line-2);border-radius:7px;background:transparent;color:var(--text-dim);font-size:14px;transition:.15s;}
+.modal-close:hover{border-color:var(--danger);color:var(--danger)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);color:var(--text);border:1px solid var(--line-2);padding:10px 16px;border-radius:8px;font-size:13.5px;font-weight:500;box-shadow:var(--shadow);z-index:200;}
+@media (max-width:640px){
+  .topbar{padding:0 12px;gap:10px}
+  .logo{font-size:14px}
+  .logo-mark{width:22px;height:22px;font-size:11px;border-radius:5px}
+  .topbar-email{display:none}
+  .admin-pill{display:none}
+  .admin-wrap{padding:16px 12px 40px}
+  .panel{padding:16px}
+  .page-head h1{font-size:22px}
+  .form-grid{grid-template-columns:1fr}
+  .table-wrap{border-radius:8px}
+  table{min-width:560px}
+}
+</style>
+<link rel="stylesheet" href="/src/styles/variables.css">
+<link rel="stylesheet" href="/src/styles/base.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="logo-mark">F</span>Firm<span>Garage</span></a>
+  <span class="admin-pill">Admin</span>
+  <div class="topbar-spacer"></div>
+  <span class="topbar-email" id="topEmail"></span>
+  <button class="topbar-btn" id="themeToggle" title="Toggle theme">◐</button>
+  <button class="topbar-logout" id="logoutTop" hidden>Sign out</button>
+</header>
+
+<div class="admin-wrap">
+
+  <div id="message" class="msg"></div>
+
+  <section id="loginPanel" class="login-shell">
+    <div class="login-brand">Firm<span>Garage</span></div>
+    <div class="login-card">
+      <h1>Admin access</h1>
+      <p class="sub">Sign in with your admin account to manage firms, reviews, and users.</p>
+      <form id="loginForm">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="username" required placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+        </div>
+        <button id="loginButton" class="btn primary" type="submit">Log in</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="dashboard" hidden>
+
+    <div class="page-head">
+      <div>
+        <div class="kicker">Control panel</div>
+        <h1>Admin console</h1>
+        <p>Manage firms, moderate reviews, and manage users.</p>
+      </div>
+      <div class="page-head-actions">
+        <button class="btn" id="refreshAll" type="button">Refresh</button>
+        <button class="btn primary" id="newFirmBtn" type="button">+ New firm</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="k">Total firms</div><div class="v" id="statTotalFirms">—</div></div>
+      <div class="stat-card"><div class="k">Verified</div><div class="v" id="statVerified">—</div></div>
+      <div class="stat-card"><div class="k">Pending reviews</div><div class="v" id="statPendingReviews">—</div></div>
+      <div class="stat-card"><div class="k">Total users</div><div class="v" id="statTotalUsers">—</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="firms" type="button">Firms <span class="badge" id="tabBadgeFirms">0</span></button>
+      <button class="tab" data-tab="reviews" type="button">Reviews <span class="badge" id="tabBadgeReviews">0</span></button>
+      <button class="tab" data-tab="users" type="button">Users <span class="badge" id="tabBadgeUsers">0</span></button>
+    </div>
+
+    <!-- FIRMS -->
+    <div class="tab-panel active" id="tab-firms">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>All firms</h2>
+            <p>Click Edit on any row to update. Changes appear on the site immediately.</p>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <input id="firmSearch" type="text" placeholder="Search by name, category, tag…" autocomplete="off">
+            <span class="icon">🔍</span>
+          </div>
+          <select class="filter-select" id="firmStatusFilter">
+            <option value="all">All statuses</option>
+            <option value="active">Active only</option>
+            <option value="inactive">Inactive only</option>
+          </select>
+          <select class="filter-select" id="firmVerifiedFilter">
+            <option value="all">All firms</option>
+            <option value="yes">Verified only</option>
+            <option value="no">Unverified only</option>
+          </select>
+          <select class="filter-select" id="firmSort">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="name">Name A–Z</option>
+            <option value="rating">Highest rating</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Firm</th>
+                <th>Category</th>
+                <th>Rating</th>
+                <th>Status</th>
+                <th>Verified</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="firmsBody">
+              <tr><td colspan="6" class="table-empty">Loading firms…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="tab-panel" id="tab-reviews">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Reviews</h2>
+            <p>Approve reviews to publish them on the site, or reject to keep them hidden.</p>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <input id="reviewSearch" type="text" placeholder="Search by reviewer, firm, or text…" autocomplete="off">
+            <span class="icon">🔍</span>
+          </div>
+          <select class="filter-select" id="reviewStatusFilter">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Reviewer</th>
+                <th>Firm</th>
+                <th>Rating</th>
+                <th>Review</th>
+                <th>Status</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsBody">
+              <tr><td colspan="6" class="table-empty">Loading reviews…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="tab-panel" id="tab-users">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Users</h2>
+            <p>View and manage registered traders.</p>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <input id="userSearch" type="text" placeholder="Search by name or email…" autocomplete="off">
+            <span class="icon">🔍</span>
+          </div>
+          <select class="filter-select" id="userVerifiedFilter">
+            <option value="all">All users</option>
+            <option value="yes">Email confirmed</option>
+            <option value="no">Unconfirmed only</option>
+          </select>
+          <select class="filter-select" id="userSort">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Country</th>
+                <th>Activity</th>
+                <th>Joined</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr><td colspan="6" class="table-empty">Loading users…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<!-- FIRM MODAL -->
+<div class="modal-overlay" id="firmModal" hidden>
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="kicker" id="modalKicker">Create</div>
+        <h2 id="modalTitle">Add a prop firm</h2>
+      </div>
+      <button class="modal-close" id="modalClose" type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="firmForm">
+        <input id="firmId" type="hidden">
+        <div class="form-grid">
+          <div class="field"><label>Firm name <span class="req">*</span></label><input id="fName" required></div>
+          <div class="field"><label>Category</label>
+            <select id="fCategory">
+              <option value="Forex / CFD">Forex / CFD</option>
+              <option value="Futures">Futures</option>
+              <option value="Crypto">Crypto</option>
+              <option value="Multi-Asset">Multi-Asset</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field"><label>Tag</label><input id="fTag" placeholder="Top Rated, Low Cost…"></div>
+          <div class="field full"><label>Description</label><textarea id="fDescription" placeholder="Short description of the firm…"></textarea></div>
+        </div>
+        <div class="form-section"><h3>Trading conditions</h3></div>
+        <div class="form-grid">
+          <div class="field"><label>Account sizes</label><input id="fAccountSizes" placeholder="$10K - $200K"></div>
+          <div class="field"><label>Starting price</label><input id="fPrice" placeholder="From €89"></div>
+          <div class="field"><label>Profit target</label><input id="fProfitTarget" placeholder="10%"></div>
+          <div class="field"><label>Daily drawdown</label><input id="fDailyDrawdown" placeholder="5%"></div>
+          <div class="field"><label>Max drawdown</label><input id="fMaxDrawdown" placeholder="10%"></div>
+          <div class="field"><label>Profit split</label><input id="fProfitSplit" placeholder="80% - 90%"></div>
+          <div class="field"><label>Payout</label><input id="fPayout" placeholder="Bi-weekly"></div>
+          <div class="field"><label>Platforms</label><input id="fPlatforms" placeholder="MT4, MT5, cTrader"></div>
+          <div class="field"><label>Rating (1–5)</label><input id="fRating" type="number" min="0" max="5" step="0.1" placeholder="4.5"></div>
+          <div class="field full"><label>Best for</label><input id="fBestFor" placeholder="Beginners, Forex traders"><span class="hint">Comma separated. Auto-filled if empty.</span></div>
+          <div class="field full"><label>Pros</label><textarea id="fPros" placeholder="Low price, Fast payouts, High split"></textarea></div>
+          <div class="field full"><label>Cons</label><textarea id="fCons" placeholder="No MT4, Slow support"></textarea></div>
+        </div>
+        <div class="form-section"><h3>Links & status</h3></div>
+        <div class="form-grid">
+          <div class="field"><label>Official website</label><input id="fOfficialWebsite" type="url" placeholder="https://…"></div>
+          <div class="field"><label>Logo URL</label><input id="fLogoUrl" type="url" placeholder="https://…"><span class="hint">Optional. Falls back to favicon.</span></div>
+          <div class="field"><label>Affiliate link</label><input id="fAffiliateLink" type="url" placeholder="https://…"></div>
+          <div class="field"><label>Status</label>
+            <select id="fStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <label class="check-row" for="fVerified">
+          <input id="fVerified" type="checkbox">
+          <label for="fVerified">Verified firm — shows green badge on the public site</label>
+        </label>
+        <div class="form-actions">
+          <button class="btn primary" id="saveFirmBtn" type="submit">Save firm</button>
+          <button class="btn" type="button" id="cancelFirmBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="modal-overlay" id="userModal" hidden>
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head">
+      <div>
+        <div class="kicker">Edit user</div>
+        <h2 id="userModalTitle">User details</h2>
+      </div>
+      <button class="modal-close" id="userModalClose" type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Email (read-only)</label>
+          <input id="uEmail" type="email" readonly>
+        </div>
+        <div class="field full">
+          <label>Display name</label>
+          <input id="uName" type="text" maxlength="80" placeholder="Full name">
+        </div>
+        <div class="field full">
+          <label>Country</label>
+          <select id="uCountry">
+            <option value="">— Not set —</option>
+            <option value="AF">Afghanistan</option>
+            <option value="AL">Albania</option>
+            <option value="DZ">Algeria</option>
+            <option value="AD">Andorra</option>
+            <option value="AO">Angola</option>
+            <option value="AR">Argentina</option>
+            <option value="AM">Armenia</option>
+            <option value="AU">Australia</option>
+            <option value="AT">Austria</option>
+            <option value="AZ">Azerbaijan</option>
+            <option value="BH">Bahrain</option>
+            <option value="BD">Bangladesh</option>
+            <option value="BY">Belarus</option>
+            <option value="BE">Belgium</option>
+            <option value="BZ">Belize</option>
+            <option value="BJ">Benin</option>
+            <option value="BT">Bhutan</option>
+            <option value="BO">Bolivia</option>
+            <option value="BA">Bosnia and Herzegovina</option>
+            <option value="BW">Botswana</option>
+            <option value="BR">Brazil</option>
+            <option value="BN">Brunei</option>
+            <option value="BG">Bulgaria</option>
+            <option value="BF">Burkina Faso</option>
+            <option value="BI">Burundi</option>
+            <option value="KH">Cambodia</option>
+            <option value="CM">Cameroon</option>
+            <option value="CA">Canada</option>
+            <option value="CV">Cape Verde</option>
+            <option value="CF">Central African Republic</option>
+            <option value="TD">Chad</option>
+            <option value="CL">Chile</option>
+            <option value="CN">China</option>
+            <option value="CO">Colombia</option>
+            <option value="KM">Comoros</option>
+            <option value="CG">Congo</option>
+            <option value="CD">Congo (DRC)</option>
+            <option value="CR">Costa Rica</option>
+            <option value="CI">Côte d'Ivoire</option>
+            <option value="HR">Croatia</option>
+            <option value="CU">Cuba</option>
+            <option value="CY">Cyprus</option>
+            <option value="CZ">Czechia</option>
+            <option value="DK">Denmark</option>
+            <option value="DJ">Djibouti</option>
+            <option value="DM">Dominica</option>
+            <option value="DO">Dominican Republic</option>
+            <option value="EC">Ecuador</option>
+            <option value="EG">Egypt</option>
+            <option value="SV">El Salvador</option>
+            <option value="GQ">Equatorial Guinea</option>
+            <option value="ER">Eritrea</option>
+            <option value="EE">Estonia</option>
+            <option value="SZ">Eswatini</option>
+            <option value="ET">Ethiopia</option>
+            <option value="FJ">Fiji</option>
+            <option value="FI">Finland</option>
+            <option value="FR">France</option>
+            <option value="GA">Gabon</option>
+            <option value="GM">Gambia</option>
+            <option value="GE">Georgia</option>
+            <option value="DE">Germany</option>
+            <option value="GH">Ghana</option>
+            <option value="GR">Greece</option>
+            <option value="GD">Grenada</option>
+            <option value="GT">Guatemala</option>
+            <option value="GN">Guinea</option>
+            <option value="GW">Guinea-Bissau</option>
+            <option value="GY">Guyana</option>
+            <option value="HT">Haiti</option>
+            <option value="HN">Honduras</option>
+            <option value="HK">Hong Kong</option>
+            <option value="HU">Hungary</option>
+            <option value="IS">Iceland</option>
+            <option value="IN">India</option>
+            <option value="ID">Indonesia</option>
+            <option value="IR">Iran</option>
+            <option value="IQ">Iraq</option>
+            <option value="IE">Ireland</option>
+            <option value="IL">Israel</option>
+            <option value="IT">Italy</option>
+            <option value="JM">Jamaica</option>
+            <option value="JP">Japan</option>
+            <option value="JO">Jordan</option>
+            <option value="KZ">Kazakhstan</option>
+            <option value="KE">Kenya</option>
+            <option value="KI">Kiribati</option>
+            <option value="KW">Kuwait</option>
+            <option value="KG">Kyrgyzstan</option>
+            <option value="LA">Laos</option>
+            <option value="LV">Latvia</option>
+            <option value="LB">Lebanon</option>
+            <option value="LS">Lesotho</option>
+            <option value="LR">Liberia</option>
+            <option value="LY">Libya</option>
+            <option value="LI">Liechtenstein</option>
+            <option value="LT">Lithuania</option>
+            <option value="LU">Luxembourg</option>
+            <option value="MO">Macau</option>
+            <option value="MG">Madagascar</option>
+            <option value="MW">Malawi</option>
+            <option value="MY">Malaysia</option>
+            <option value="MV">Maldives</option>
+            <option value="ML">Mali</option>
+            <option value="MT">Malta</option>
+            <option value="MH">Marshall Islands</option>
+            <option value="MR">Mauritania</option>
+            <option value="MU">Mauritius</option>
+            <option value="MX">Mexico</option>
+            <option value="FM">Micronesia</option>
+            <option value="MD">Moldova</option>
+            <option value="MC">Monaco</option>
+            <option value="MN">Mongolia</option>
+            <option value="ME">Montenegro</option>
+            <option value="MA">Morocco</option>
+            <option value="MZ">Mozambique</option>
+            <option value="MM">Myanmar</option>
+            <option value="NA">Namibia</option>
+            <option value="NR">Nauru</option>
+            <option value="NP">Nepal</option>
+            <option value="NL">Netherlands</option>
+            <option value="NZ">New Zealand</option>
+            <option value="NI">Nicaragua</option>
+            <option value="NE">Niger</option>
+            <option value="NG">Nigeria</option>
+            <option value="KP">North Korea</option>
+            <option value="MK">North Macedonia</option>
+            <option value="NO">Norway</option>
+            <option value="OM">Oman</option>
+            <option value="PK">Pakistan</option>
+            <option value="PW">Palau</option>
+            <option value="PS">Palestine</option>
+            <option value="PA">Panama</option>
+            <option value="PG">Papua New Guinea</option>
+            <option value="PY">Paraguay</option>
+            <option value="PE">Peru</option>
+            <option value="PH">Philippines</option>
+            <option value="PL">Poland</option>
+            <option value="PT">Portugal</option>
+            <option value="QA">Qatar</option>
+            <option value="RO">Romania</option>
+            <option value="RU">Russia</option>
+            <option value="RW">Rwanda</option>
+            <option value="KN">Saint Kitts and Nevis</option>
+            <option value="LC">Saint Lucia</option>
+            <option value="VC">Saint Vincent and the Grenadines</option>
+            <option value="WS">Samoa</option>
+            <option value="SM">San Marino</option>
+            <option value="ST">São Tomé and Príncipe</option>
+            <option value="SA">Saudi Arabia</option>
+            <option value="SN">Senegal</option>
+            <option value="RS">Serbia</option>
+            <option value="SC">Seychelles</option>
+            <option value="SL">Sierra Leone</option>
+            <option value="SG">Singapore</option>
+            <option value="SK">Slovakia</option>
+            <option value="SI">Slovenia</option>
+            <option value="SB">Solomon Islands</option>
+            <option value="SO">Somalia</option>
+            <option value="ZA">South Africa</option>
+            <option value="KR">South Korea</option>
+            <option value="SS">South Sudan</option>
+            <option value="ES">Spain</option>
+            <option value="LK">Sri Lanka</option>
+            <option value="SD">Sudan</option>
+            <option value="SR">Suriname</option>
+            <option value="SE">Sweden</option>
+            <option value="CH">Switzerland</option>
+            <option value="SY">Syria</option>
+            <option value="TW">Taiwan</option>
+            <option value="TJ">Tajikistan</option>
+            <option value="TZ">Tanzania</option>
+            <option value="TH">Thailand</option>
+            <option value="TL">Timor-Leste</option>
+            <option value="TG">Togo</option>
+            <option value="TO">Tonga</option>
+            <option value="TT">Trinidad and Tobago</option>
+            <option value="TN">Tunisia</option>
+            <option value="TR">Turkey</option>
+            <option value="TM">Turkmenistan</option>
+            <option value="TV">Tuvalu</option>
+            <option value="UG">Uganda</option>
+            <option value="UA">Ukraine</option>
+            <option value="AE">United Arab Emirates</option>
+            <option value="GB">United Kingdom</option>
+            <option value="US">United States</option>
+            <option value="UY">Uruguay</option>
+            <option value="UZ">Uzbekistan</option>
+            <option value="VU">Vanuatu</option>
+            <option value="VA">Vatican City</option>
+            <option value="VE">Venezuela</option>
+            <option value="VN">Vietnam</option>
+            <option value="YE">Yemen</option>
+            <option value="ZM">Zambia</option>
+            <option value="ZW">Zimbabwe</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions" style="border-top:1px solid var(--line);padding-top:16px;margin-top:18px">
+        <button class="btn primary" id="userSaveBtn" type="button">Save changes</button>
+        <button class="btn" id="userResetBtn" type="button">Send password reset</button>
+        <button class="btn" id="userCancelBtn" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" hidden></div>
+
+<script type="module">
+import { db } from "/src/services/supabase.js";
+
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+let firmsCache = [];
+let reviewsCache = [];
+let usersCache = [];
+let busy = false;
+let editingFirmId = null;
+let editingUserId = null;
+
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const USER_COUNTRY_NAMES = {US:"United States",GB:"United Kingdom",NP:"Nepal",IN:"India",AU:"Australia",CA:"Canada",DE:"Germany",FR:"France",ES:"Spain",IT:"Italy",BR:"Brazil",JP:"Japan",CN:"China",AE:"United Arab Emirates",SA:"Saudi Arabia",PK:"Pakistan",BD:"Bangladesh",NG:"Nigeria",ZA:"South Africa",RU:"Russia",MX:"Mexico",ID:"Indonesia",PH:"Philippines",VN:"Vietnam",TH:"Thailand",MY:"Malaysia",SG:"Singapore",KR:"South Korea",TR:"Turkey",EG:"Egypt",PL:"Poland",NL:"Netherlands",SE:"Sweden",NO:"Norway",DK:"Denmark",FI:"Finland",IE:"Ireland",PT:"Portugal",GR:"Greece",CZ:"Czechia",AT:"Austria",CH:"Switzerland",BE:"Belgium"};
+
+/* THEME */
+const THEME_KEY = "Firm Garage-theme";
+function getStoredTheme(){ return localStorage.getItem(THEME_KEY) || "dark"; }
+function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(THEME_KEY, t); }
+function toggleTheme(){ applyTheme(getStoredTheme() === "dark" ? "light" : "dark"); }
+applyTheme(getStoredTheme());
+$("themeToggle").addEventListener("click", toggleTheme);
+
+function toast(msg){
+  const el = $("toast");
+  el.textContent = msg; el.hidden = false;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.hidden = true, 3000);
+}
+function showMsg(msg, type="info"){
+  const el = $("message");
+  el.textContent = msg;
+  el.className = "msg show " + type;
+  clearTimeout(showMsg._t);
+  showMsg._t = setTimeout(() => { el.className = "msg"; }, 5000);
+}
+function hideMsg(){ $("message").className = "msg"; }
+
+/* AUTH */
+async function isAdmin(user){
+  if (!user) return false;
+  const { data, error } = await db.from("admin_users").select("user_id").eq("user_id", user.id).maybeSingle();
+  if (error) { console.error("Admin check:", error); return false; }
+  return !!data;
+}
+
+async function showSession(){
+  const { data, error } = await db.auth.getSession();
+  if (error) { showMsg(error.message, "error"); return; }
+  const user = data.session?.user || null;
+  currentUser = user;
+
+  if (!user) {
+    $("loginPanel").hidden = false;
+    $("dashboard").hidden = true;
+    $("logoutTop").hidden = true;
+    $("topEmail").textContent = "";
+    return;
+  }
+  if (!(await isAdmin(user))) {
+    await db.auth.signOut();
+    currentUser = null;
+    $("loginPanel").hidden = false;
+    $("dashboard").hidden = true;
+    $("logoutTop").hidden = true;
+    showMsg("This account is not an authorized admin.", "error");
+    return;
+  }
+  $("loginPanel").hidden = true;
+  $("dashboard").hidden = false;
+  $("logoutTop").hidden = false;
+  $("topEmail").textContent = user.email || "";
+  hideMsg();
+  await Promise.all([loadFirms(), loadReviews(), loadUsers()]);
+}
+
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("loginButton");
+  btn.disabled = true;
+  showMsg("Logging in…", "info");
+  try {
+    const { error } = await db.auth.signInWithPassword({
+      email: $("email").value.trim(),
+      password: $("password").value
+    });
+    if (error) throw error;
+    await showSession();
+  } catch (err) {
+    showMsg(err.message || "Login failed.", "error");
+  } finally { btn.disabled = false; }
+});
+
+$("logoutTop").addEventListener("click", async () => {
+  await db.auth.signOut();
+  currentUser = null;
+  $("dashboard").hidden = true;
+  $("loginPanel").hidden = false;
+  $("logoutTop").hidden = true;
+  $("topEmail").textContent = "";
+  showMsg("Logged out.", "success");
+});
+
+/* TABS */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    tab.classList.add("active");
+    $("tab-" + tab.dataset.tab).classList.add("active");
+  });
+});
+
+/* FIRMS */
+async function loadFirms(){
+  $("firmsBody").innerHTML = `<tr><td colspan="6" class="table-empty">Loading firms…</td></tr>`;
+  const { data, error } = await db.from("firms").select("*").order("created_at", { ascending: false });
+  if (error) {
+    $("firmsBody").innerHTML = `<tr><td colspan="6" class="table-empty">Error: ${esc(error.message)}</td></tr>`;
+    return;
+  }
+  firmsCache = data || [];
+  updateStats();
+  renderFirms();
+}
+
+function updateStats(){
+  const total = firmsCache.length;
+  const verified = firmsCache.filter(f => f.verified).length;
+  const pendingReviews = reviewsCache.filter(r => String(r.status).toLowerCase() === "pending").length;
+  $("statTotalFirms").textContent = total;
+  $("statVerified").textContent = verified;
+  $("statPendingReviews").textContent = pendingReviews;
+  $("statTotalUsers").textContent = usersCache.length || "—";
+  $("tabBadgeFirms").textContent = total;
+  $("tabBadgeReviews").textContent = reviewsCache.length;
+  $("tabBadgeUsers").textContent = usersCache.length;
+}
+
+function renderFirms(){
+  const search = ($("firmSearch").value || "").toLowerCase().trim();
+  const status = $("firmStatusFilter").value;
+  const verified = $("firmVerifiedFilter").value;
+  const sort = $("firmSort").value;
+
+  let list = firmsCache.slice();
+  if (search) {
+    list = list.filter(f =>
+      (f.name || "").toLowerCase().includes(search) ||
+      (f.category || "").toLowerCase().includes(search) ||
+      (f.tag || "").toLowerCase().includes(search)
+    );
+  }
+  if (status !== "all") list = list.filter(f => (f.status || "").toLowerCase() === status);
+  if (verified === "yes") list = list.filter(f => f.verified === true);
+  if (verified === "no") list = list.filter(f => !f.verified);
+
+  if (sort === "oldest") list.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+  else if (sort === "name") list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+  else if (sort === "rating") list.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
+  else list.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+  if (!list.length) {
+    $("firmsBody").innerHTML = `<tr><td colspan="6" class="table-empty">No firms match your filters.</td></tr>`;
+    return;
+  }
+  $("firmsBody").innerHTML = list.map(f => {
+    const name = esc(f.name || "Unnamed");
+    const cat = esc(f.category || "—");
+    const rating = f.rating ? `★ ${f.rating}` : "—";
+    const statusBadge = String(f.status || "").toLowerCase() === "active"
+      ? `<span class="badge green">Active</span>`
+      : `<span class="badge grey">${esc(f.status || "unknown")}</span>`;
+    const verifiedBadge = f.verified
+      ? `<span class="badge green">Verified</span>`
+      : `<span class="badge grey">Unverified</span>`;
+    const tagLine = f.tag ? `<span class="sub">${esc(f.tag)}</span>` : "";
+    return `<tr>
+      <td class="firm-name">${name}${tagLine}</td>
+      <td>${cat}</td>
+      <td>${esc(rating)}</td>
+      <td>${statusBadge}</td>
+      <td>${verifiedBadge}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn small" data-edit="${esc(f.id)}" type="button">Edit</button>
+          <button class="btn small danger" data-del="${esc(f.id)}" type="button">Delete</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+  $("firmsBody").querySelectorAll("[data-edit]").forEach(b => b.onclick = () => openFirmModal(b.dataset.edit));
+  $("firmsBody").querySelectorAll("[data-del]").forEach(b => b.onclick = () => deleteFirm(b.dataset.del));
+}
+
+$("firmSearch").addEventListener("input", renderFirms);
+$("firmStatusFilter").addEventListener("change", renderFirms);
+$("firmVerifiedFilter").addEventListener("change", renderFirms);
+$("firmSort").addEventListener("change", renderFirms);
+
+function clearFirmForm(){
+  editingFirmId = null;
+  $("firmForm").reset();
+  $("firmId").value = "";
+  $("fStatus").value = "active";
+  $("fCategory").value = "Forex / CFD";
+  $("fVerified").checked = false;
+  $("modalKicker").textContent = "Create";
+  $("modalTitle").textContent = "Add a prop firm";
+  $("saveFirmBtn").textContent = "Save firm";
+}
+
+async function openFirmModal(id){
+  clearFirmForm();
+  if (id) {
+    const firm = firmsCache.find(f => String(f.id) === String(id));
+    if (!firm) return;
+    editingFirmId = firm.id;
+    $("firmId").value = firm.id;
+    $("fName").value = firm.name || "";
+    $("fCategory").value = firm.category || "Forex / CFD";
+    $("fTag").value = firm.tag || "";
+    $("fDescription").value = firm.description || "";
+    $("fAccountSizes").value = firm.account_sizes || "";
+    $("fPrice").value = firm.price || "";
+    $("fProfitTarget").value = firm.profit_target || "";
+    $("fDailyDrawdown").value = firm.daily_drawdown || "";
+    $("fMaxDrawdown").value = firm.max_drawdown || "";
+    $("fProfitSplit").value = firm.profit_split || "";
+    $("fPayout").value = firm.payout || "";
+    $("fPlatforms").value = firm.platforms || "";
+    $("fRating").value = firm.rating ?? "";
+    $("fBestFor").value = firm.best_for || "";
+    $("fPros").value = firm.pros || "";
+    $("fCons").value = firm.cons || "";
+    $("fOfficialWebsite").value = firm.official_website || "";
+    $("fLogoUrl").value = firm.logo_url || "";
+    $("fAffiliateLink").value = firm.affiliate_link || "";
+    $("fStatus").value = firm.status || "active";
+    $("fVerified").checked = Boolean(firm.verified);
+    $("modalKicker").textContent = "Edit";
+    $("modalTitle").textContent = "Edit " + (firm.name || "firm");
+    $("saveFirmBtn").textContent = "Update firm";
+  }
+  $("firmModal").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeFirmModal(){
+  $("firmModal").hidden = true;
+  document.body.style.overflow = "";
+}
+$("modalClose").addEventListener("click", closeFirmModal);
+$("cancelFirmBtn").addEventListener("click", closeFirmModal);
+$("newFirmBtn").addEventListener("click", () => openFirmModal(null));
+$("firmModal").addEventListener("click", e => { if (e.target === $("firmModal")) closeFirmModal(); });
+
+$("firmForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (busy) return;
+  busy = true;
+  const btn = $("saveFirmBtn");
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+  try {
+    const rating = $("fRating").value === "" ? null : Number($("fRating").value);
+    const payload = {
+      name: $("fName").value.trim(),
+      category: $("fCategory").value || null,
+      tag: $("fTag").value.trim() || null,
+      description: $("fDescription").value.trim() || null,
+      account_sizes: $("fAccountSizes").value.trim() || null,
+      price: $("fPrice").value.trim() || null,
+      profit_target: $("fProfitTarget").value.trim() || null,
+      daily_drawdown: $("fDailyDrawdown").value.trim() || null,
+      max_drawdown: $("fMaxDrawdown").value.trim() || null,
+      profit_split: $("fProfitSplit").value.trim() || null,
+      payout: $("fPayout").value.trim() || null,
+      platforms: $("fPlatforms").value.trim() || null,
+      rating: rating,
+      best_for: $("fBestFor").value.trim() || null,
+      pros: $("fPros").value.trim() || null,
+      cons: $("fCons").value.trim() || null,
+      official_website: $("fOfficialWebsite").value.trim() || null,
+      logo_url: $("fLogoUrl").value.trim() || null,
+      affiliate_link: $("fAffiliateLink").value.trim() || null,
+      status: $("fStatus").value || "active",
+      verified: $("fVerified").checked,
+      updated_at: new Date().toISOString()
+    };
+    if (!payload.name) throw new Error("Firm name is required.");
+    const id = $("firmId").value;
+    const result = id
+      ? await db.from("firms").update(payload).eq("id", id)
+      : await db.from("firms").insert(payload);
+    if (result.error) throw result.error;
+    toast(id ? "Firm updated" : "Firm added");
+    closeFirmModal();
+    await loadFirms();
+  } catch (err) {
+    toast("Error: " + err.message);
+  } finally {
+    busy = false;
+    btn.disabled = false;
+    btn.textContent = editingFirmId ? "Update firm" : "Save firm";
+  }
+});
+
+async function deleteFirm(id){
+  const firm = firmsCache.find(f => String(f.id) === String(id));
+  if (!firm) return;
+  if (!confirm(`Delete "${firm.name}"? This cannot be undone.`)) return;
+  const { error } = await db.from("firms").delete().eq("id", id);
+  if (error) { toast("Delete failed: " + error.message); return; }
+  toast("Firm deleted");
+  await loadFirms();
+}
+
+/* REVIEWS */
+async function loadReviews(){
+  $("reviewsBody").innerHTML = `<tr><td colspan="6" class="table-empty">Loading reviews…</td></tr>`;
+  const [reviewRes, firmRes] = await Promise.all([
+    db.from("firm_reviews").select("*").order("created_at", { ascending: false }),
+    db.from("firms").select("id,name")
+  ]);
+  if (reviewRes.error) {
+    $("reviewsBody").innerHTML = `<tr><td colspan="6" class="table-empty">Error: ${esc(reviewRes.error.message)}</td></tr>`;
+    return;
+  }
+  const firmNames = new Map((firmRes.data || []).map(f => [f.id, f.name]));
+  reviewsCache = (reviewRes.data || []).map(r => ({ ...r, _firmName: firmNames.get(r.firm_id) || "Unknown firm" }));
+  updateStats();
+  renderReviews();
+}
+
+function renderReviews(){
+  const search = ($("reviewSearch").value || "").toLowerCase().trim();
+  const status = $("reviewStatusFilter").value;
+  let list = reviewsCache.slice();
+  if (status !== "all") list = list.filter(r => String(r.status || "").toLowerCase() === status);
+  if (search) {
+    list = list.filter(r =>
+      (r.reviewer_name || "").toLowerCase().includes(search) ||
+      (r._firmName || "").toLowerCase().includes(search) ||
+      (r.review_text || "").toLowerCase().includes(search)
+    );
+  }
+  if (!list.length) {
+    $("reviewsBody").innerHTML = `<tr><td colspan="6" class="table-empty">No reviews match your filters.</td></tr>`;
+    return;
+  }
+  $("reviewsBody").innerHTML = list.map(r => {
+    const s = String(r.status || "pending").toLowerCase();
+    const badgeClass = s === "approved" ? "green" : s === "rejected" ? "red" : "amber";
+    const stars = "★".repeat(Math.min(5, Number(r.rating) || 0)) + "☆".repeat(5 - Math.min(5, Number(r.rating) || 0));
+    const snippet = (r.review_text || "").slice(0, 100) + ((r.review_text || "").length > 100 ? "…" : "");
+    const showApprove = s !== "approved";
+    const showReject = s !== "rejected";
+    return `<tr>
+      <td class="firm-name">${esc(r.reviewer_name || "Anonymous")}</td>
+      <td>${esc(r._firmName)}</td>
+      <td style="color:var(--gold)">${esc(stars)}</td>
+      <td style="max-width:340px;color:var(--text-dim)">${esc(snippet)}</td>
+      <td><span class="badge ${badgeClass}">${esc(s)}</span></td>
+      <td>
+        <div class="row-actions">
+          ${showApprove ? `<button class="btn small success" data-approve="${esc(r.id)}" type="button">Approve</button>` : ""}
+          ${showReject ? `<button class="btn small danger" data-reject="${esc(r.id)}" type="button">Reject</button>` : ""}
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+  $("reviewsBody").querySelectorAll("[data-approve]").forEach(b => b.onclick = () => moderateReview(b.dataset.approve, "approved", b));
+  $("reviewsBody").querySelectorAll("[data-reject]").forEach(b => b.onclick = () => moderateReview(b.dataset.reject, "rejected", b));
+}
+
+$("reviewSearch").addEventListener("input", renderReviews);
+$("reviewStatusFilter").addEventListener("change", renderReviews);
+
+async function moderateReview(id, status, btn){
+  if (busy) return;
+  busy = true;
+  btn.disabled = true;
+  try {
+    const { error } = await db.from("firm_reviews").update({ status }).eq("id", id);
+    if (error) throw error;
+    toast("Review " + status);
+    await loadReviews();
+  } catch (err) {
+    toast("Error: " + err.message);
+    btn.disabled = false;
+  } finally { busy = false; }
+}
+
+/* USERS */
+async function loadUsers(){
+  $("usersBody").innerHTML = `<tr><td colspan="6" class="table-empty">Loading users…</td></tr>`;
+  const { data, error } = await db.rpc("admin_list_users");
+  if (error) {
+    $("usersBody").innerHTML = `<tr><td colspan="6" class="table-empty">Error: ${esc(error.message)}<br><small style="color:var(--text-mute)">Make sure the SQL function is installed in Supabase.</small></td></tr>`;
+    console.error(error);
+    usersCache = [];
+    updateStats();
+    return;
+  }
+  usersCache = data || [];
+  updateStats();
+  renderUsers();
+}
+
+function renderUsers(){
+  const search = ($("userSearch").value || "").toLowerCase().trim();
+  const verified = $("userVerifiedFilter").value;
+  const sort = $("userSort").value;
+
+  let list = usersCache.slice();
+  if (search) {
+    list = list.filter(u =>
+      (u.email || "").toLowerCase().includes(search) ||
+      (u.full_name || "").toLowerCase().includes(search)
+    );
+  }
+  if (verified === "yes") list = list.filter(u => u.email_confirmed_at);
+  if (verified === "no") list = list.filter(u => !u.email_confirmed_at);
+
+  if (sort === "oldest") list.sort((a,b) => new Date(a.created_at||0) - new Date(b.created_at||0));
+  else if (sort === "name") list.sort((a,b) => (a.full_name||"").localeCompare(b.full_name||""));
+  else list.sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+
+  if (!list.length) {
+    $("usersBody").innerHTML = `<tr><td colspan="6" class="table-empty">No users match your filters.</td></tr>`;
+    return;
+  }
+
+  $("usersBody").innerHTML = list.map(u => {
+    const name = u.full_name || "—";
+    const email = u.email || "—";
+    const country = u.country ? (USER_COUNTRY_NAMES[u.country] || u.country) + " (" + u.country + ")" : "—";
+    const joined = u.created_at ? new Date(u.created_at).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" }) : "—";
+    const confirmedBadge = u.email_confirmed_at
+      ? `<span class="badge green" style="margin-left:6px">Verified</span>`
+      : `<span class="badge amber" style="margin-left:6px">Unconfirmed</span>`;
+    const activity = `<div style="font-size:12px;color:var(--text-mute);line-height:1.6">♡ ${u.favorite_count || 0} · ☆ ${u.review_count || 0} · ✎ ${u.trade_count || 0}</div>`;
+    return `<tr>
+      <td class="firm-name">${esc(name)}${confirmedBadge}</td>
+      <td>${esc(email)}</td>
+      <td>${esc(country)}</td>
+      <td>${activity}</td>
+      <td>${esc(joined)}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn small" data-edit-user="${esc(u.id)}" type="button">Edit</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+  $("usersBody").querySelectorAll("[data-edit-user]").forEach(b => b.onclick = () => openUserModal(b.dataset.editUser));
+}
+
+$("userSearch").addEventListener("input", renderUsers);
+$("userVerifiedFilter").addEventListener("change", renderUsers);
+$("userSort").addEventListener("change", renderUsers);
+
+function openUserModal(userId){
+  const u = usersCache.find(x => String(x.id) === String(userId));
+  if (!u) return;
+  editingUserId = u.id;
+  $("userModalTitle").textContent = u.full_name || u.email || "User";
+  $("uEmail").value = u.email || "";
+  $("uName").value = u.full_name || "";
+  $("uCountry").value = u.country || "";
+  $("userModal").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function closeUserModal(){
+  $("userModal").hidden = true;
+  document.body.style.overflow = "";
+  editingUserId = null;
+}
+$("userModalClose").addEventListener("click", closeUserModal);
+$("userCancelBtn").addEventListener("click", closeUserModal);
+$("userModal").addEventListener("click", e => { if (e.target === $("userModal")) closeUserModal(); });
+
+$("userSaveBtn").addEventListener("click", async () => {
+  if (!editingUserId) return;
+  const btn = $("userSaveBtn");
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+  try {
+    const { error } = await db.rpc("admin_update_user_meta", {
+      target_user_id: editingUserId,
+      new_full_name: $("uName").value.trim() || "",
+      new_country: $("uCountry").value || ""
+    });
+    if (error) throw error;
+    toast("User updated");
+    closeUserModal();
+    await loadUsers();
+  } catch (err) {
+    toast("Error: " + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Save changes";
+  }
+});
+
+$("userResetBtn").addEventListener("click", async () => {
+  const email = $("uEmail").value.trim();
+  if (!email) return;
+  if (!confirm(`Send a password reset email to ${email}?`)) return;
+  const btn = $("userResetBtn");
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+  try {
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + "/auth.html"
+    });
+    if (error) throw error;
+    toast("Password reset email sent");
+  } catch (err) {
+    toast("Error: " + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Send password reset";
+  }
+});
+
+/* REFRESH */
+$("refreshAll").addEventListener("click", async () => {
+  await Promise.all([loadFirms(), loadReviews(), loadUsers()]);
+  toast("Refreshed");
+});
+
+/* INIT */
+db.auth.onAuthStateChange(() => setTimeout(showSession, 0));
+showSession();
+</script>
+<script type="module">
+import { db } from "/src/services/supabase.js";
+try { const { data } = await db.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (data && data.nextLevel === "aal2" && data.currentLevel !== "aal2") location.replace("mfa.html?next=" + encodeURIComponent(location.pathname)); } catch (e) {}
+</script>
+</body>
+</html>

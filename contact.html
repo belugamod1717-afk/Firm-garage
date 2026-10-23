@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact Firm Garage</title><meta name="description" content="Contact the Firm Garage team by live chat or message form."><meta name="theme-color" content="#050b1a">
+<link rel="icon" type="image/png" href="/assets/images/logo.png"><link rel="apple-touch-icon" href="/assets/images/logo.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Firm Garage"><meta property="og:title" content="Contact Firm Garage"><meta property="og:description" content="Contact the Firm Garage team by live chat or message form.">
+<meta property="og:url" content="https://firm-garage-two.vercel.app/contact.html"><meta property="og:image" content="https://firm-garage-two.vercel.app/assets/images/og-image.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/styles/variables.css"><link rel="stylesheet" href="/src/styles/base.css"><link rel="stylesheet" href="/src/styles/components.css">
+</head><body>
+<script src="/src/config/siteConfig.js"></script>
+<script src="/src/components/common/layout.js"></script>
+
+<main><section class="fg-hero" style="padding-bottom:24px"><div class="fg-wrap"><span class="fg-eyebrow">Contact Us</span><h1 class="fg-h1">We’d love to hear from you.</h1><p class="fg-lead">Questions about a firm listing, a correction, a partnership or your account? Send a message or start a live chat with the Firm Garage team.</p></div></section>
+<section class="fg-section" style="padding-top:10px"><div class="fg-wrap fg-grid g2" style="align-items:start">
+<div class="fg-card"><h3 style="font-size:18px;margin-bottom:14px">Send a message</h3>
+<div id="formAlert" role="status" aria-live="polite"></div>
+<form id="cf" novalidate>
+<div class="fg-field"><label for="name">Name</label><input id="name" name="name" autocomplete="name" maxlength="100" required><div class="fg-err" id="e-name"></div></div>
+<div class="fg-field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" required><div class="fg-err" id="e-email"></div></div>
+<div class="fg-field"><label for="subject">Subject</label><input id="subject" name="subject" maxlength="150" required><div class="fg-err" id="e-subject"></div></div>
+<div class="fg-field"><label for="message">Message</label><textarea id="message" name="message" maxlength="3000" required></textarea><div class="fg-err" id="e-message"></div></div>
+<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Leave blank<input name="website" id="hp" tabindex="-1" autocomplete="off"></label></div>
+<button class="fg-btn solid lg" id="send" type="submit">Send message</button></form></div>
+<div style="display:grid;gap:16px">
+<div class="fg-card"><div class="fg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg></div><h3>Live chat</h3><p id="chatText">Chat with the Firm Garage team in real time using the chat bubble on this page.</p><button class="fg-btn" id="chatBtn" type="button" style="margin-top:12px">Open live chat</button></div>
+<div class="fg-card"><h3>Contact details</h3><div id="details" style="display:grid;gap:8px;font-size:14px;color:var(--text-dim)"></div></div>
+</div></div></section></main>
+<script>
+(function(){
+var C=window.FG||{},K=C.contact||{},T=C.tawk||{},$=function(i){return document.getElementById(i)};
+var rows=[["Contact email",K.email,"mailto:"],["Support email",K.supportEmail,"mailto:"],["Business email",K.businessEmail,"mailto:"],["Phone",K.phone,"tel:"],["Address",K.address,""]];
+var h=rows.filter(function(r){return r[1]}).map(function(r){var t=document.createTextNode(r[1]);var d=document.createElement("div");var b=document.createElement("b");b.textContent=r[0]+": ";d.appendChild(b);if(r[2]){var a=document.createElement("a");a.href=r[2]+r[1];a.textContent=r[1];a.style.color="var(--accent)";d.appendChild(a)}else d.appendChild(t);return d});
+if(h.length)h.forEach(function(d){$("details").appendChild(d)});else $("details").textContent="Contact details have not been published yet. Please use the form or live chat.";
+var chatOn=T.propertyId&&T.widgetId;
+if(!chatOn){$("chatText").textContent="Live chat is not available right now. Please use the message form.";$("chatBtn").disabled=true}
+$("chatBtn").onclick=function(){if(window.Tawk_API&&window.Tawk_API.maximize)window.Tawk_API.maximize()};
+var formOn=!!K.formEndpoint;
+if(!formOn){$("formAlert").innerHTML='<div class="fg-alert info">The message form is not connected yet, so messages cannot be delivered from this page. '+(chatOn?'Please use live chat instead.':'Please check back soon.')+'</div>'}
+function setErr(k,m){$("e-"+k).textContent=m||""}
+$("cf").addEventListener("submit",function(e){
+ e.preventDefault();var v={name:$("name").value.trim(),email:$("email").value.trim(),subject:$("subject").value.trim(),message:$("message").value.trim()},ok=true;
+ ["name","email","subject","message"].forEach(function(k){setErr(k,"")});
+ if(v.name.length<2){setErr("name","Please enter your name.");ok=false}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)){setErr("email","Enter a valid email address.");ok=false}
+ if(v.subject.length<3){setErr("subject","Please add a subject.");ok=false}
+ if(v.message.length<10){setErr("message","Please write at least 10 characters.");ok=false}
+ if(!ok)return;
+ if(!formOn){$("formAlert").innerHTML='<div class="fg-alert bad">Your message was not sent: the contact form has not been connected by the site owner yet.</div>';return}
+ if($("hp").value)return;
+ var b=$("send");b.disabled=true;b.textContent="Sending…";
+ fetch(K.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(v)})
+ .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);$("formAlert").innerHTML='<div class="fg-alert ok">Thanks — your message has been sent.</div>';$("cf").reset()})
+ .catch(function(){$("formAlert").innerHTML='<div class="fg-alert bad">Sorry, we couldn’t send your message. Please try again later.</div>'})
+ .finally(function(){b.disabled=false;b.textContent="Send message"});
+});
+})();
+</script></body></html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Two-factor authentication — Firm Garage</title><meta name="robots" content="noindex"><link rel="icon" href="/assets/images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>:root[data-theme=dark]{--bg:#070a12;--surface:#0e1320;--surface-2:#131a2b;--line:#1f2940;--line-2:#2b3856;--text:#eaf0ff;--text-dim:#a6b3d1;--text-mute:#6d7b9c;--accent:#6d8dff;--accent-bg:rgba(109,141,255,.12);--ok:#34d399;--bad:#f87171}
+:root[data-theme=light]{--bg:#f6f8fd;--surface:#fff;--surface-2:#f1f4fb;--line:#e0e6f2;--line-2:#cdd6e8;--text:#12182b;--text-dim:#4a5573;--text-mute:#8590ad;--accent:#3d5afe;--accent-bg:rgba(61,90,254,.09);--ok:#059669;--bad:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--text);font:15px/1.6 Inter,system-ui,sans-serif}
+.box{width:min(440px,100%);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:30px}h1{font-size:22px;letter-spacing:-.02em;margin-bottom:6px}p{color:var(--text-dim);font-size:14px;margin-bottom:16px}
+input{width:100%;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text);border-radius:10px;padding:12px;font:600 22px monospace;letter-spacing:.35em;text-align:center;margin-bottom:12px}
+button{width:100%;padding:12px;border:0;border-radius:10px;background:var(--accent);color:#fff;font:600 14px Inter;cursor:pointer;margin-bottom:10px}button.ghost{background:transparent;border:1px solid var(--line-2);color:var(--text-dim)}button.danger{background:transparent;border:1px solid var(--bad);color:var(--bad)}
+.qr{background:#fff;border-radius:12px;padding:10px;width:200px;margin:0 auto 12px}.qr img{width:100%;display:block}code{display:block;word-break:break-all;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px;margin-bottom:14px;color:var(--text-dim)}
+#msg{font-size:13px;min-height:20px;margin-top:6px}.err{color:var(--bad)}.good{color:var(--ok)}[hidden]{display:none!important}a{color:var(--accent);font-size:13px}</style></head>
+<body><div class="box">
+<div id="vLoad"><p>Loading…</p></div>
+<div id="vChallenge" hidden><h1>Two-factor verification</h1><p>Enter the 6-digit code from your authenticator app.</p>
+<input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"><button id="verify">Verify</button><button class="ghost" id="out">Sign out</button></div>
+<div id="vManage" hidden><h1>Two-factor authentication</h1><p id="state"></p>
+<div id="enrollBox" hidden><div class="qr"><img id="qr" alt="Scan this QR code with your authenticator app"></div><p>Scan with Google Authenticator, 1Password, Authy, etc. — or enter this key manually:</p><code id="secret"></code>
+<input id="ecode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"><button id="confirm">Confirm &amp; enable</button></div>
+<button id="enroll">Enable 2FA</button><button class="danger" id="remove" hidden>Disable 2FA</button><a href="dashboard.html">← Back to dashboard</a></div>
+<div id="msg" role="status" aria-live="polite"></div></div>
+<script type="module">
+import { db } from "/src/services/supabase.js";
+const $=i=>document.getElementById(i),show=(id)=>{["vLoad","vChallenge","vManage"].forEach(x=>$(x).hidden=x!==id)};
+const msg=(t,c="")=>{$("msg").className=c;$("msg").textContent=t};
+document.documentElement.dataset.theme=localStorage.getItem("Firm Garage-theme")||"dark";
+const next=()=>{try{const u=new URL(new URLSearchParams(location.search).get("next")||"/dashboard.html",location.origin);return u.origin===location.origin?u.pathname+u.search:"/dashboard.html"}catch{return"/dashboard.html"}};
+const { data:{ session } } = await db.auth.getSession();
+if(!session){location.replace("auth.html?next="+encodeURIComponent("mfa.html"))}
+let factor=null,pending=null;
+async function refresh(){
+  const { data:aal } = await db.auth.mfa.getAuthenticatorAssuranceLevel();
+  const { data:f } = await db.auth.mfa.listFactors(); factor=(f?.totp||[])[0]||null;
+  if(factor&&aal.currentLevel!=="aal2"){show("vChallenge");return "challenge"}
+  show("vManage");$("state").textContent=factor?"2FA is ON. Your account requires a code at each sign-in.":"2FA is OFF. Add a second step to protect your account and payouts data.";
+  $("enroll").hidden=!!factor;$("remove").hidden=!factor;$("enrollBox").hidden=true;return "manage";
+}
+await refresh();
+$("verify").onclick=async()=>{msg("");const {error}=await db.auth.mfa.challengeAndVerify({factorId:factor.id,code:$("code").value.trim()});
+  if(error){msg("Invalid or expired code. Try again.","err");return}location.replace(next())};
+$("out").onclick=async()=>{await db.auth.signOut();location.replace("auth.html")};
+$("enroll").onclick=async()=>{msg("");const {data,error}=await db.auth.mfa.enroll({factorType:"totp",friendlyName:"Authenticator "+new Date().toISOString().slice(0,10)});
+  if(error){msg("Could not start setup: "+error.message,"err");return}pending=data.id;$("qr").src=data.totp.qr_code;$("secret").textContent=data.totp.secret;$("enrollBox").hidden=false;$("enroll").hidden=true};
+$("confirm").onclick=async()=>{const {error}=await db.auth.mfa.challengeAndVerify({factorId:pending,code:$("ecode").value.trim()});
+  if(error){msg("Code incorrect. Check your device clock and try again.","err");return}msg("Two-factor authentication enabled.","good");await refresh()};
+$("remove").onclick=async()=>{if(!confirm("Disable two-factor authentication?"))return;const {error}=await db.auth.mfa.unenroll({factorId:factor.id});
+  if(error){msg("Could not disable: "+error.message,"err");return}msg("2FA disabled.","good");await refresh()};
+</script></body></html>
